@@ -17,6 +17,7 @@ namespace DOAN_BMCSDL
         public LoginForm()
         {
             InitializeComponent();
+            CenterToScreen();
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -77,6 +78,13 @@ namespace DOAN_BMCSDL
         private void pictureBox3_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btn_admin_login_Click(object sender, EventArgs e)
+        {
+            Administrator administrator = new Administrator();
+            administrator.Show();
+            this.Hide();
         }
     }
 }

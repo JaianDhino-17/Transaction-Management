@@ -245,6 +245,7 @@
             this.btn_admin_login.TabIndex = 19;
             this.btn_admin_login.Text = "ADMIN";
             this.btn_admin_login.UseVisualStyleBackColor = true;
+            this.btn_admin_login.Click += new System.EventHandler(this.btn_admin_login_Click);
             // 
             // LoginForm
             // 

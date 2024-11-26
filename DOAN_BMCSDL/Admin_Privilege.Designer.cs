@@ -31,36 +31,45 @@
             this.cbTable_space = new System.Windows.Forms.ComboBox();
             this.txtUser = new System.Windows.Forms.TextBox();
             this.txtPass = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.cbQuota = new System.Windows.Forms.ComboBox();
+            this.cmProfile = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.cbUser_admin = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.cbPrivilege = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.comboBox5 = new System.Windows.Forms.ComboBox();
+            this.cbClient = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.comboBox6 = new System.Windows.Forms.ComboBox();
+            this.cbGroup = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.comboBox8 = new System.Windows.Forms.ComboBox();
+            this.cbTable = new System.Windows.Forms.ComboBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.btnGrant = new System.Windows.Forms.Button();
+            this.btnRevoke = new System.Windows.Forms.Button();
+            this.btnUnlock = new System.Windows.Forms.Button();
+            this.btnNewPass = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cbTable_space
             // 
             this.cbTable_space.FormattingEnabled = true;
-            this.cbTable_space.Location = new System.Drawing.Point(173, 329);
+            this.cbTable_space.Location = new System.Drawing.Point(207, 332);
             this.cbTable_space.Name = "cbTable_space";
             this.cbTable_space.Size = new System.Drawing.Size(185, 24);
             this.cbTable_space.TabIndex = 0;
+            this.cbTable_space.SelectedIndexChanged += new System.EventHandler(this.cbTable_space_SelectedIndexChanged);
             // 
             // txtUser
             // 
-            this.txtUser.Location = new System.Drawing.Point(173, 183);
+            this.txtUser.Location = new System.Drawing.Point(207, 187);
             this.txtUser.Multiline = true;
             this.txtUser.Name = "txtUser";
             this.txtUser.Size = new System.Drawing.Size(185, 25);
@@ -68,27 +77,27 @@
             // 
             // txtPass
             // 
-            this.txtPass.Location = new System.Drawing.Point(173, 231);
+            this.txtPass.Location = new System.Drawing.Point(207, 236);
             this.txtPass.Multiline = true;
             this.txtPass.Name = "txtPass";
             this.txtPass.Size = new System.Drawing.Size(185, 25);
             this.txtPass.TabIndex = 2;
             // 
-            // comboBox1
+            // cbQuota
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(173, 374);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(185, 24);
-            this.comboBox1.TabIndex = 3;
+            this.cbQuota.FormattingEnabled = true;
+            this.cbQuota.Location = new System.Drawing.Point(207, 378);
+            this.cbQuota.Name = "cbQuota";
+            this.cbQuota.Size = new System.Drawing.Size(185, 24);
+            this.cbQuota.TabIndex = 3;
             // 
-            // comboBox2
+            // cmProfile
             // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(173, 414);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(185, 24);
-            this.comboBox2.TabIndex = 4;
+            this.cmProfile.FormattingEnabled = true;
+            this.cmProfile.Location = new System.Drawing.Point(207, 418);
+            this.cmProfile.Name = "cmProfile";
+            this.cmProfile.Size = new System.Drawing.Size(185, 24);
+            this.cmProfile.TabIndex = 4;
             // 
             // label1
             // 
@@ -150,13 +159,13 @@
             this.label6.TabIndex = 11;
             this.label6.Text = "User : ";
             // 
-            // comboBox3
+            // cbUser_admin
             // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(580, 183);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(185, 24);
-            this.comboBox3.TabIndex = 10;
+            this.cbUser_admin.FormattingEnabled = true;
+            this.cbUser_admin.Location = new System.Drawing.Point(580, 183);
+            this.cbUser_admin.Name = "cbUser_admin";
+            this.cbUser_admin.Size = new System.Drawing.Size(185, 24);
+            this.cbUser_admin.TabIndex = 10;
             // 
             // label7
             // 
@@ -168,13 +177,13 @@
             this.label7.TabIndex = 13;
             this.label7.Text = "Privileges : ";
             // 
-            // comboBox4
+            // cbPrivilege
             // 
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(580, 232);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(185, 24);
-            this.comboBox4.TabIndex = 12;
+            this.cbPrivilege.FormattingEnabled = true;
+            this.cbPrivilege.Location = new System.Drawing.Point(580, 232);
+            this.cbPrivilege.Name = "cbPrivilege";
+            this.cbPrivilege.Size = new System.Drawing.Size(185, 24);
+            this.cbPrivilege.TabIndex = 12;
             // 
             // label8
             // 
@@ -186,13 +195,13 @@
             this.label8.TabIndex = 15;
             this.label8.Text = "Gán User : ";
             // 
-            // comboBox5
+            // cbClient
             // 
-            this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(580, 329);
-            this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(185, 24);
-            this.comboBox5.TabIndex = 14;
+            this.cbClient.FormattingEnabled = true;
+            this.cbClient.Location = new System.Drawing.Point(580, 329);
+            this.cbClient.Name = "cbClient";
+            this.cbClient.Size = new System.Drawing.Size(185, 24);
+            this.cbClient.TabIndex = 14;
             // 
             // label9
             // 
@@ -204,13 +213,13 @@
             this.label9.TabIndex = 17;
             this.label9.Text = "Nhóm quyền : ";
             // 
-            // comboBox6
+            // cbGroup
             // 
-            this.comboBox6.FormattingEnabled = true;
-            this.comboBox6.Location = new System.Drawing.Point(580, 374);
-            this.comboBox6.Name = "comboBox6";
-            this.comboBox6.Size = new System.Drawing.Size(185, 24);
-            this.comboBox6.TabIndex = 16;
+            this.cbGroup.FormattingEnabled = true;
+            this.cbGroup.Location = new System.Drawing.Point(580, 374);
+            this.cbGroup.Name = "cbGroup";
+            this.cbGroup.Size = new System.Drawing.Size(185, 24);
+            this.cbGroup.TabIndex = 16;
             // 
             // label11
             // 
@@ -222,36 +231,134 @@
             this.label11.TabIndex = 21;
             this.label11.Text = "Table : ";
             // 
-            // comboBox8
+            // cbTable
             // 
-            this.comboBox8.FormattingEnabled = true;
-            this.comboBox8.Location = new System.Drawing.Point(917, 231);
-            this.comboBox8.Name = "comboBox8";
-            this.comboBox8.Size = new System.Drawing.Size(185, 24);
-            this.comboBox8.TabIndex = 20;
+            this.cbTable.FormattingEnabled = true;
+            this.cbTable.Location = new System.Drawing.Point(917, 231);
+            this.cbTable.Name = "cbTable";
+            this.cbTable.Size = new System.Drawing.Size(185, 24);
+            this.cbTable.TabIndex = 20;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.checkBox1.ImageAlign = System.Drawing.ContentAlignment.TopRight;
+            this.checkBox1.Location = new System.Drawing.Point(815, 334);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(78, 24);
+            this.checkBox1.TabIndex = 22;
+            this.checkBox1.Text = "Select";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox2.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.checkBox2.ImageAlign = System.Drawing.ContentAlignment.TopRight;
+            this.checkBox2.Location = new System.Drawing.Point(917, 334);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(73, 24);
+            this.checkBox2.TabIndex = 23;
+            this.checkBox2.Text = "Insert";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox3.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.checkBox3.ImageAlign = System.Drawing.ContentAlignment.TopRight;
+            this.checkBox3.Location = new System.Drawing.Point(815, 377);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(84, 24);
+            this.checkBox3.TabIndex = 24;
+            this.checkBox3.Text = "Update";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox4.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.checkBox4.ImageAlign = System.Drawing.ContentAlignment.TopRight;
+            this.checkBox4.Location = new System.Drawing.Point(917, 375);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(80, 24);
+            this.checkBox4.TabIndex = 25;
+            this.checkBox4.Text = "Delete";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // btnGrant
+            // 
+            this.btnGrant.Location = new System.Drawing.Point(188, 499);
+            this.btnGrant.Name = "btnGrant";
+            this.btnGrant.Size = new System.Drawing.Size(158, 65);
+            this.btnGrant.TabIndex = 26;
+            this.btnGrant.Text = "Cấp quyền";
+            this.btnGrant.UseVisualStyleBackColor = true;
+            // 
+            // btnRevoke
+            // 
+            this.btnRevoke.Location = new System.Drawing.Point(386, 499);
+            this.btnRevoke.Name = "btnRevoke";
+            this.btnRevoke.Size = new System.Drawing.Size(158, 65);
+            this.btnRevoke.TabIndex = 27;
+            this.btnRevoke.Text = "Thu hồi";
+            this.btnRevoke.UseVisualStyleBackColor = true;
+            // 
+            // btnUnlock
+            // 
+            this.btnUnlock.Location = new System.Drawing.Point(580, 499);
+            this.btnUnlock.Name = "btnUnlock";
+            this.btnUnlock.Size = new System.Drawing.Size(158, 65);
+            this.btnUnlock.TabIndex = 28;
+            this.btnUnlock.Text = "Mở khóa";
+            this.btnUnlock.UseVisualStyleBackColor = true;
+            this.btnUnlock.Click += new System.EventHandler(this.btnUnlock_Click);
+            // 
+            // btnNewPass
+            // 
+            this.btnNewPass.Location = new System.Drawing.Point(772, 499);
+            this.btnNewPass.Name = "btnNewPass";
+            this.btnNewPass.Size = new System.Drawing.Size(158, 65);
+            this.btnNewPass.TabIndex = 29;
+            this.btnNewPass.Text = "Đổi MK";
+            this.btnNewPass.UseVisualStyleBackColor = true;
+            this.btnNewPass.Click += new System.EventHandler(this.btnNewPass_Click);
             // 
             // Admin_Privilege
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1192, 704);
+            this.Controls.Add(this.btnNewPass);
+            this.Controls.Add(this.btnUnlock);
+            this.Controls.Add(this.btnRevoke);
+            this.Controls.Add(this.btnGrant);
+            this.Controls.Add(this.checkBox4);
+            this.Controls.Add(this.checkBox3);
+            this.Controls.Add(this.checkBox2);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.comboBox8);
+            this.Controls.Add(this.cbTable);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.comboBox6);
+            this.Controls.Add(this.cbGroup);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.comboBox5);
+            this.Controls.Add(this.cbClient);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.comboBox4);
+            this.Controls.Add(this.cbPrivilege);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.comboBox3);
+            this.Controls.Add(this.cbUser_admin);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cmProfile);
+            this.Controls.Add(this.cbQuota);
             this.Controls.Add(this.txtPass);
             this.Controls.Add(this.txtUser);
             this.Controls.Add(this.cbTable_space);
@@ -267,22 +374,30 @@
         private System.Windows.Forms.ComboBox cbTable_space;
         private System.Windows.Forms.TextBox txtUser;
         private System.Windows.Forms.TextBox txtPass;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox cbQuota;
+        private System.Windows.Forms.ComboBox cmProfile;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.ComboBox cbUser_admin;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.ComboBox comboBox4;
+        private System.Windows.Forms.ComboBox cbPrivilege;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.ComboBox comboBox5;
+        private System.Windows.Forms.ComboBox cbClient;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ComboBox comboBox6;
+        private System.Windows.Forms.ComboBox cbGroup;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.ComboBox comboBox8;
+        private System.Windows.Forms.ComboBox cbTable;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.Button btnGrant;
+        private System.Windows.Forms.Button btnRevoke;
+        private System.Windows.Forms.Button btnUnlock;
+        private System.Windows.Forms.Button btnNewPass;
     }
 }
