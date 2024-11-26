@@ -21,7 +21,7 @@ namespace DOAN_BMCSDL
         {
             this.conn = conn;
         }
-        /*public DataTable GetName_Tablespace()
+        public DataTable GetName_Tablespace()
         {
             try
             {
@@ -33,7 +33,27 @@ namespace DOAN_BMCSDL
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 OracleParameter resultPara = new OracleParameter();
+                resultPara.ParameterName = "@Result";
+                resultPara.OracleDbType = OracleDbType.RefCursor;
+                resultPara.Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(resultPara);
+
+                cmd.ExecuteNonQuery();
+
+                if (resultPara.Value != DBNull.Value)
+                {
+                    OracleDataReader ret = ((OracleRefCursor)resultPara.Value).GetDataReader();
+                    DataTable data = new DataTable();
+                    data.Load(ret);
+                    return data;
+                }
             }
-        }*/
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.GetBaseException().ToString());
+       
+            }
+            return null;
+        }
     }
 }
