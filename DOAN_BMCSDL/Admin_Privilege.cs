@@ -16,10 +16,17 @@ namespace DOAN_BMCSDL
 
     {
         OracleConnection conn;
+        TableSpace tableSpace;
+        Profile profile;
         public Admin_Privilege()
         {
             InitializeComponent();
             CenterToScreen();
+            conn=Database.Get_connect();
+            tableSpace= new TableSpace(conn);
+            profile = new Profile(conn);
+            Load_Combobox();
+            
         }
 
         private void btnUnlock_Click(object sender, EventArgs e)
@@ -51,9 +58,6 @@ namespace DOAN_BMCSDL
 
         private bool Unlock_Account(string username, string newPassword)
         {
-
-            Database.Set_Database("localhost", "1521", "orcl", "sys", "sys");
-
             if (Database.Connect())
             {
                 try
@@ -79,11 +83,7 @@ namespace DOAN_BMCSDL
                     return false;
                 }
             }
-            else
-            {
-                MessageBox.Show("Kết nối không thành công.");
-                return false;
-            }
+            return false;
         }
 
 
@@ -113,10 +113,7 @@ namespace DOAN_BMCSDL
         }
 
         private bool ChangePassword(string username, string newPassword)
-        {
-            
-            Database.Set_Database("localhost", "1521", "orcl", "sys", "sys");
-
+        {          
             if (Database.Connect())
             {
                 try
@@ -141,18 +138,105 @@ namespace DOAN_BMCSDL
                     MessageBox.Show("Lỗi: " + ex.Message);
                     return false;
                 }
+                
             }
-            else
-            {
-                MessageBox.Show("Kết nối không thành công.");
-                return false;
-            }
+            return false;
+
         }
 
         private void cbTable_space_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+            int i = cbTable.SelectedIndex;
+            string tablespace=cbTable_space.SelectedItem.ToString();
         }
+
+        void Load_Combobox()
+        {
+            //Load Table Space
+            DataTable read_tableSpace = tableSpace.GetName_Tablespace();
+            foreach (DataRow r in read_tableSpace.Rows)
+            {
+                cbTable_space.Items.Add(r[0]);
+            }
+            cbTable_space.SelectedIndex = 0;
+
+
+            //Load Profile
+            DataTable read_profile = profile.GetName_Profile();
+            foreach (DataRow r in read_profile.Rows)
+            {
+                cbProfile.Items.Add(r[0]);
+            }
+            cbProfile.SelectedIndex = 0;
+        }
+       
+
+        private void CbProfile_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = cbProfile.SelectedIndex;
+            string profile = cbProfile.SelectedItem.ToString();
+        }
+
+        private void btnGrant_Click(object sender, EventArgs e)
+        {
+            //Thủ tục cấp Quota
+            if (string.IsNullOrWhiteSpace(txtUser.Text) ||
+        string.IsNullOrWhiteSpace(txtQuota.Text) ||
+        cbTable_space.SelectedIndex == -1)
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin.");
+                return;
+            }
+
+            string username = txtUser.Text;
+            string tablespace = cbTable_space.SelectedItem.ToString();
+            string quota = txtQuota.Text;
+
+            
+            bool isSuccess = SetQuota(username, tablespace, quota);
+
+            if (isSuccess)
+            {
+                MessageBox.Show($"Quota cho người dùng {username} đã được cập nhật thành công trong tablespace {tablespace}.");
+            }
+            else
+            {
+                MessageBox.Show("Đã xảy ra lỗi khi cấp quota.");
+            }
+        }
+
+        private bool SetQuota(string username, string tablespace, string quota)
+        {
+            if (Database.Connect())
+            {
+                try
+                {
+                    using (OracleConnection conn = Database.Get_connect())
+                    {
+                        using (OracleCommand cmd = new OracleCommand("SET_QUOTA", conn))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+
+                           
+                            cmd.Parameters.Add("v_username", OracleDbType.Varchar2).Value = username;
+                            cmd.Parameters.Add("v_tablespace", OracleDbType.Varchar2).Value = tablespace;
+                            cmd.Parameters.Add("v_quota", OracleDbType.Varchar2).Value = quota;  
+                            cmd.ExecuteNonQuery();
+
+                            return true;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex.Message);
+                    return false;
+                }
+            }
+            return false;
+        }
+
+
 
     }
     
