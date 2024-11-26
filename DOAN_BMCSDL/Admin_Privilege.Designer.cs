@@ -31,8 +31,7 @@
             this.cbTable_space = new System.Windows.Forms.ComboBox();
             this.txtUser = new System.Windows.Forms.TextBox();
             this.txtPass = new System.Windows.Forms.TextBox();
-            this.cbQuota = new System.Windows.Forms.ComboBox();
-            this.cmProfile = new System.Windows.Forms.ComboBox();
+            this.cbProfile = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -56,6 +55,7 @@
             this.btnRevoke = new System.Windows.Forms.Button();
             this.btnUnlock = new System.Windows.Forms.Button();
             this.btnNewPass = new System.Windows.Forms.Button();
+            this.txtQuota = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // cbTable_space
@@ -83,21 +83,14 @@
             this.txtPass.Size = new System.Drawing.Size(185, 25);
             this.txtPass.TabIndex = 2;
             // 
-            // cbQuota
+            // cbProfile
             // 
-            this.cbQuota.FormattingEnabled = true;
-            this.cbQuota.Location = new System.Drawing.Point(207, 378);
-            this.cbQuota.Name = "cbQuota";
-            this.cbQuota.Size = new System.Drawing.Size(185, 24);
-            this.cbQuota.TabIndex = 3;
-            // 
-            // cmProfile
-            // 
-            this.cmProfile.FormattingEnabled = true;
-            this.cmProfile.Location = new System.Drawing.Point(207, 418);
-            this.cmProfile.Name = "cmProfile";
-            this.cmProfile.Size = new System.Drawing.Size(185, 24);
-            this.cmProfile.TabIndex = 4;
+            this.cbProfile.FormattingEnabled = true;
+            this.cbProfile.Location = new System.Drawing.Point(207, 378);
+            this.cbProfile.Name = "cbProfile";
+            this.cbProfile.Size = new System.Drawing.Size(185, 24);
+            this.cbProfile.TabIndex = 4;
+            this.cbProfile.SelectedIndexChanged += new System.EventHandler(this.CbProfile_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -133,7 +126,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(32, 373);
+            this.label4.Location = new System.Drawing.Point(32, 423);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(90, 25);
             this.label4.TabIndex = 8;
@@ -143,7 +136,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(32, 414);
+            this.label5.Location = new System.Drawing.Point(32, 374);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(92, 25);
             this.label5.TabIndex = 9;
@@ -299,6 +292,7 @@
             this.btnGrant.TabIndex = 26;
             this.btnGrant.Text = "Cấp quyền";
             this.btnGrant.UseVisualStyleBackColor = true;
+            this.btnGrant.Click += new System.EventHandler(this.btnGrant_Click);
             // 
             // btnRevoke
             // 
@@ -329,11 +323,20 @@
             this.btnNewPass.UseVisualStyleBackColor = true;
             this.btnNewPass.Click += new System.EventHandler(this.btnNewPass_Click);
             // 
+            // txtQuota
+            // 
+            this.txtQuota.Location = new System.Drawing.Point(207, 423);
+            this.txtQuota.Multiline = true;
+            this.txtQuota.Name = "txtQuota";
+            this.txtQuota.Size = new System.Drawing.Size(185, 25);
+            this.txtQuota.TabIndex = 30;
+            // 
             // Admin_Privilege
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1192, 704);
+            this.Controls.Add(this.txtQuota);
             this.Controls.Add(this.btnNewPass);
             this.Controls.Add(this.btnUnlock);
             this.Controls.Add(this.btnRevoke);
@@ -357,8 +360,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.cmProfile);
-            this.Controls.Add(this.cbQuota);
+            this.Controls.Add(this.cbProfile);
             this.Controls.Add(this.txtPass);
             this.Controls.Add(this.txtUser);
             this.Controls.Add(this.cbTable_space);
@@ -374,8 +376,7 @@
         private System.Windows.Forms.ComboBox cbTable_space;
         private System.Windows.Forms.TextBox txtUser;
         private System.Windows.Forms.TextBox txtPass;
-        private System.Windows.Forms.ComboBox cbQuota;
-        private System.Windows.Forms.ComboBox cmProfile;
+        private System.Windows.Forms.ComboBox cbProfile;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -399,5 +400,6 @@
         private System.Windows.Forms.Button btnRevoke;
         private System.Windows.Forms.Button btnUnlock;
         private System.Windows.Forms.Button btnNewPass;
+        private System.Windows.Forms.TextBox txtQuota;
     }
 }

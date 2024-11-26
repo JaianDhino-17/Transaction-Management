@@ -13,19 +13,19 @@ using Oracle.ManagedDataAccess.Types;
 
 namespace DOAN_BMCSDL
 {
-    public class TableSpace
+    public class Profile
     {
         OracleConnection conn;
 
-        public TableSpace(OracleConnection conn)
+        public Profile(OracleConnection conn)
         {
             this.conn = conn;
         }
-        public DataTable GetName_Tablespace()
+        public DataTable GetName_Profile()
         {
             try
             {
-                string Procedure = "P_GET_TABLESPACES";
+                string Procedure = "P_GET_PROFILES";
 
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = conn;
@@ -51,11 +51,11 @@ namespace DOAN_BMCSDL
             catch (Exception ex)
             {
                 MessageBox.Show(ex.GetBaseException().ToString());
-       
+
             }
             return null;
         }
 
-        
+
     }
 }
