@@ -16,228 +16,214 @@ namespace DOAN_BMCSDL
 
     {
         OracleConnection conn;
-        TableSpace tableSpace;
-        Profile profile;
+        PhanQuyen p;
+
         public Admin_Privilege()
         {
             InitializeComponent();
             CenterToScreen();
-            conn=Database.Get_connect();
-            tableSpace= new TableSpace(conn);
-            profile = new Profile(conn);
-            Load_Combobox();
-            
+            conn = Database.Get_connect();
+            p = new PhanQuyen(conn);
+
+            Load_User();
+            Load_Roles();
         }
 
-        private void btnUnlock_Click(object sender, EventArgs e)
+        void set_Color_checkBox_user()
         {
-            if (string.IsNullOrWhiteSpace(txtUser.Text) || string.IsNullOrWhiteSpace(txtPass.Text))
-            {
-                MessageBox.Show("Vui lòng nhập tên người dùng và mật khẩu.");
-                return;
-            }
-
-
-            string username = txtUser.Text;
-            string newPassword = txtPass.Text;
-
-
-            bool isSuccess = Unlock_Account(username, newPassword);
-
-            if (isSuccess)
-            {
-                MessageBox.Show("Tài khoản đã được mở khóa.");
-            }
+            if (cb_select_us.Checked)
+                cb_select_us.ForeColor = Color.Green;
             else
-            {
-                MessageBox.Show("Đã xảy ra lỗi khi mở khóa tài khoản.");
-            }
-        }
+                cb_select_us.ForeColor = Color.Red;
 
-
-
-        private bool Unlock_Account(string username, string newPassword)
-        {
-            if (Database.Connect())
-            {
-                try
-                {
-
-                    using (OracleConnection conn = Database.Get_connect())
-                    {
-
-                        using (OracleCommand cmd = new OracleCommand("P_UNLOCK_ACCOUNT", conn))
-                        {
-                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                            cmd.Parameters.Add("P_USERNAME", OracleDbType.Varchar2).Value = username;
-                            cmd.Parameters.Add("P_PASS", OracleDbType.Varchar2).Value = newPassword;
-                            cmd.ExecuteNonQuery();
-
-                            return true;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi: " + ex.Message);
-                    return false;
-                }
-            }
-            return false;
-        }
-
-
-        private void btnNewPass_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtUser.Text) || string.IsNullOrWhiteSpace(txtPass.Text))
-            {
-                MessageBox.Show("Vui lòng nhập tên người dùng và mật khẩu mới.");
-                return;
-            }
-
-          
-            string username = txtUser.Text;
-            string newPassword = txtPass.Text;
-
-            
-            bool isSuccess = ChangePassword(username, newPassword);
-
-            if (isSuccess)
-            {
-                MessageBox.Show("Mật khẩu đã được thay đổi thành công.");
-            }
+            if (cb_ins_us.Checked)
+                cb_ins_us.ForeColor = Color.Green;
             else
-            {
-                MessageBox.Show("Đã xảy ra lỗi khi thay đổi mật khẩu.");
-            }
-        }
+                cb_ins_us.ForeColor = Color.Red;
 
-        private bool ChangePassword(string username, string newPassword)
-        {          
-            if (Database.Connect())
-            {
-                try
-                {
-                   
-                    using (OracleConnection conn = Database.Get_connect())
-                    {
-                        
-                        using (OracleCommand cmd = new OracleCommand("P_CHANGE_PASSWORD", conn))
-                        {
-                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                            cmd.Parameters.Add("P_USERNAME", OracleDbType.Varchar2).Value = username;
-                            cmd.Parameters.Add("P_PASS", OracleDbType.Varchar2).Value = newPassword;
-                            cmd.ExecuteNonQuery();
-
-                            return true;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi: " + ex.Message);
-                    return false;
-                }
-                
-            }
-            return false;
-
-        }
-
-        private void cbTable_space_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int i = cbTable.SelectedIndex;
-            string tablespace=cbTable_space.SelectedItem.ToString();
-        }
-
-        void Load_Combobox()
-        {
-            //Load Table Space
-            DataTable read_tableSpace = tableSpace.GetName_Tablespace();
-            foreach (DataRow r in read_tableSpace.Rows)
-            {
-                cbTable_space.Items.Add(r[0]);
-            }
-            cbTable_space.SelectedIndex = 0;
-
-
-            //Load Profile
-            DataTable read_profile = profile.GetName_Profile();
-            foreach (DataRow r in read_profile.Rows)
-            {
-                cbProfile.Items.Add(r[0]);
-            }
-            cbProfile.SelectedIndex = 0;
-        }
-       
-
-        private void CbProfile_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int i = cbProfile.SelectedIndex;
-            string profile = cbProfile.SelectedItem.ToString();
-        }
-
-        private void btnGrant_Click(object sender, EventArgs e)
-        {
-            //Thủ tục cấp Quota
-            if (string.IsNullOrWhiteSpace(txtUser.Text) ||
-        string.IsNullOrWhiteSpace(txtQuota.Text) ||
-        cbTable_space.SelectedIndex == -1)
-            {
-                MessageBox.Show("Vui lòng nhập đầy đủ thông tin.");
-                return;
-            }
-
-            string username = txtUser.Text;
-            string tablespace = cbTable_space.SelectedItem.ToString();
-            string quota = txtQuota.Text;
-
-            
-            bool isSuccess = SetQuota(username, tablespace, quota);
-
-            if (isSuccess)
-            {
-                MessageBox.Show($"Quota cho người dùng {username} đã được cập nhật thành công trong tablespace {tablespace}.");
-            }
+            if (cb_upd_us.Checked)
+                cb_upd_us.ForeColor = Color.Green;
             else
-            {
-                MessageBox.Show("Đã xảy ra lỗi khi cấp quota.");
-            }
+                cb_upd_us.ForeColor = Color.Red;
+
+            if (cb_del_us.Checked)
+                cb_del_us.ForeColor = Color.Green;
+            else
+                cb_del_us.ForeColor = Color.Red;
         }
 
-        private bool SetQuota(string username, string tablespace, string quota)
+
+        void set_Color_checkBox_Roles()
         {
-            if (Database.Connect())
-            {
-                try
-                {
-                    using (OracleConnection conn = Database.Get_connect())
-                    {
-                        using (OracleCommand cmd = new OracleCommand("SET_QUOTA", conn))
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
+            if (cb_select_ro.Checked)
+                cb_select_ro.ForeColor = Color.Green;
+            else
+                cb_select_ro.ForeColor = Color.Red;
 
-                           
-                            cmd.Parameters.Add("v_username", OracleDbType.Varchar2).Value = username;
-                            cmd.Parameters.Add("v_tablespace", OracleDbType.Varchar2).Value = tablespace;
-                            cmd.Parameters.Add("v_quota", OracleDbType.Varchar2).Value = quota;  
-                            cmd.ExecuteNonQuery();
+            if (cb_insert_ro.Checked)
+                cb_insert_ro.ForeColor = Color.Green;
+            else
+                cb_insert_ro.ForeColor = Color.Red;
 
-                            return true;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi: " + ex.Message);
-                    return false;
-                }
-            }
-            return false;
+            if (cb_update_ro.Checked)
+                cb_update_ro.ForeColor = Color.Green;
+            else
+                cb_update_ro.ForeColor = Color.Red;
+
+            if (cb_delete_ro.Checked)
+                cb_delete_ro.ForeColor = Color.Green;
+            else
+                cb_delete_ro.ForeColor = Color.Red;
+        }
+
+        void set_Color_Grant_user()
+        {
+            if (cb_user_proc.Checked)
+                cb_user_proc.ForeColor = Color.Green;
+            else
+                cb_user_proc.ForeColor = Color.Red;
+
+            if (cb_user_fun.Checked)
+                cb_user_fun.ForeColor = Color.Green;
+            else
+                cb_user_fun.ForeColor = Color.Red;
+
+            if (cb_user_pk.Checked)
+                cb_user_pk.ForeColor = Color.Green;
+            else
+                cb_user_pk.ForeColor = Color.Red;
+
+        }
+
+        void set_Color_Grant_Roles()
+        {
+            if (cb_roles_proc.Checked)
+                cb_roles_proc.ForeColor = Color.Green;
+            else
+                cb_roles_proc.ForeColor = Color.Red;
+
+            if (cb_roles_fun.Checked)
+                cb_roles_fun.ForeColor = Color.Green;
+            else
+                cb_roles_fun.ForeColor = Color.Red;
+
+            if (cb_roles_pk.Checked)
+                cb_roles_pk.ForeColor = Color.Green;
+            else
+                cb_roles_pk.ForeColor = Color.Red;
+
         }
 
 
+        void set_lable_Table()
+        {
+            string t = "Table : ";
+            if (cmb_table.SelectedItem != null)
+            {
+                t += cmb_table.SelectedItem.ToString();
+            }
+            lb_table_roles.Text = t;
+            lb_table_user.Text = t;
+        }
+
+        void set_Text_Button(string user, string role)
+        {
+            int kq = p.Get_Roles_User_Check(user, role);
+            if (kq == 1)
+            {
+                btn_Grant_Revoke_Role.Text = "Revoke";
+            }
+            else if (kq == 0)
+            {
+                btn_Grant_Revoke_Role.Text = "Grant";
+            }
+        }
+
+        void Load_User()
+        {
+            OracleDataReader read = p.Get_User();
+            while (read.Read())
+            {
+                cmb_user.Items.Add(read[0].ToString());
+                cmb_username.Items.Add(read[0].ToString());
+            }
+            read.Close();
+            cmb_user.SelectedIndex = 0;
+            cmb_username.SelectedIndex = 0;
+        }
+
+        void Load_Roles()
+        {
+            OracleDataReader read = p.Get_Roles();
+            while (read.Read())
+            {
+                cmb_user.Items.Add(read[0].ToString());
+                cmb_username.Items.Add(read[0].ToString());
+            }
+            read.Close();
+            cmb_user.SelectedIndex = 0;
+            cmb_username.SelectedIndex = 0;
+        }
+
+        void Clear_Combobox()
+        {
+            cmb_procedure.Items.Clear();
+            cmb_function.Items.Clear();
+            cmb_package.Items.Clear();
+            cmb_table.Items.Clear();
+        }
+
+        void Select_Combobox()
+        {
+            if (cmb_procedure.Items.Count == 0)
+                cmb_procedure.Items.Add("");
+            if (cmb_function.Items.Count == 0)
+                cmb_function.Items.Add("");
+            if (cmb_package.Items.Count == 0)
+                cmb_package.Items.Add("");
+            if (cmb_table.Items.Count == 0)
+                cmb_table.Items.Add("");
+
+            cmb_procedure.SelectedIndex = 0;
+            cmb_function.SelectedIndex = 0;
+            cmb_package.SelectedIndex = 0;
+            cmb_table.SelectedIndex = 0;
+        }
+
+
+        void Load_pro_user(string userowner)
+        {
+            Clear_Combobox();
+            OracleDataReader read_proc = p.Get_Proc_User(userowner, "PROCEDURE");
+            while (read_proc.Read())
+            {
+                cmb_procedure.Items.Add(read_proc[0].ToString());
+            }
+            read_proc.Close();
+
+            OracleDataReader read_fun = p.Get_Proc_User(userowner, "FUNCTION");
+            while (read_fun.Read())
+            {
+                cmb_function.Items.Add(read_fun[0].ToString());
+            }
+            read_fun.Close();
+
+            OracleDataReader read_pack = p.Get_Proc_User(userowner, "PACKAGE");
+            while (read_pack.Read())
+            {
+                cmb_function.Items.Add(read_pack[0].ToString());
+            }
+            read_pack.Close();
+
+            OracleDataReader read_tab = p.Get_Table_User(userowner);
+            while (read_tab.Read())
+            {
+                cmb_function.Items.Add(read_tab[0].ToString());
+            }
+            read_tab.Close();
+            Select_Combobox();
+
+        }
 
     }
-    
 }
