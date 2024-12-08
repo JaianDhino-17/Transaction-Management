@@ -40,24 +40,28 @@
             this.label7 = new System.Windows.Forms.Label();
             this.dtg_grant = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lb_table_user = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label11 = new System.Windows.Forms.Label();
-            this.cmb_procedure = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.cmb_user = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.cmb_function = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cmb_package = new System.Windows.Forms.ComboBox();
-            this.cb_user_proc = new System.Windows.Forms.CheckBox();
-            this.cb_roles_proc = new System.Windows.Forms.CheckBox();
-            this.cb_user_fun = new System.Windows.Forms.CheckBox();
-            this.cb_roles_fun = new System.Windows.Forms.CheckBox();
-            this.cb_user_pk = new System.Windows.Forms.CheckBox();
-            this.cb_roles_pk = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.cmb_table = new System.Windows.Forms.ComboBox();
+            this.cb_roles_pk = new System.Windows.Forms.CheckBox();
+            this.cb_user_pk = new System.Windows.Forms.CheckBox();
+            this.cb_roles_fun = new System.Windows.Forms.CheckBox();
+            this.cb_user_fun = new System.Windows.Forms.CheckBox();
+            this.cb_roles_proc = new System.Windows.Forms.CheckBox();
+            this.cb_user_proc = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cmb_package = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.cmb_function = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cmb_user = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.cmb_procedure = new System.Windows.Forms.ComboBox();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.lb_user = new System.Windows.Forms.Label();
+            this.btn_Grant_Revoke_Role = new System.Windows.Forms.Button();
+            this.lb_table_roles = new System.Windows.Forms.Label();
             this.cb_select_ro = new System.Windows.Forms.CheckBox();
             this.cb_insert_ro = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -66,10 +70,7 @@
             this.cb_delete_ro = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.cmb_roles = new System.Windows.Forms.ComboBox();
-            this.lb_table_roles = new System.Windows.Forms.Label();
-            this.lb_table_user = new System.Windows.Forms.Label();
-            this.btn_Grant_Revoke_Role = new System.Windows.Forms.Button();
-            this.lb_user = new System.Windows.Forms.Label();
+            this.btn_accMng = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dtg_roles)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtg_grant)).BeginInit();
             this.panel1.SuspendLayout();
@@ -90,6 +91,7 @@
             this.cb_select_us.TabIndex = 22;
             this.cb_select_us.Text = "Select";
             this.cb_select_us.UseVisualStyleBackColor = true;
+            this.cb_select_us.Click += new System.EventHandler(this.cb_select_us_Click);
             // 
             // cb_ins_us
             // 
@@ -103,6 +105,7 @@
             this.cb_ins_us.TabIndex = 23;
             this.cb_ins_us.Text = "Insert";
             this.cb_ins_us.UseVisualStyleBackColor = true;
+            this.cb_ins_us.Click += new System.EventHandler(this.cb_insert_us_Click);
             // 
             // cb_upd_us
             // 
@@ -116,6 +119,7 @@
             this.cb_upd_us.TabIndex = 24;
             this.cb_upd_us.Text = "Update";
             this.cb_upd_us.UseVisualStyleBackColor = true;
+            this.cb_upd_us.Click += new System.EventHandler(this.cb_upd_us_Click);
             // 
             // cb_del_us
             // 
@@ -129,6 +133,7 @@
             this.cb_del_us.TabIndex = 25;
             this.cb_del_us.Text = "Delete";
             this.cb_del_us.UseVisualStyleBackColor = true;
+            this.cb_del_us.Click += new System.EventHandler(this.cb_del_us_Click);
             // 
             // label1
             // 
@@ -143,10 +148,10 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(5, 73);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(76, 25);
+            this.label4.Size = new System.Drawing.Size(67, 20);
             this.label4.TabIndex = 37;
             this.label4.Text = "User : ";
             // 
@@ -157,6 +162,7 @@
             this.cmb_username.Name = "cmb_username";
             this.cmb_username.Size = new System.Drawing.Size(185, 24);
             this.cmb_username.TabIndex = 36;
+            this.cmb_username.SelectedIndexChanged += new System.EventHandler(this.cmb_username_SelectedIndexChanged);
             // 
             // dtg_roles
             // 
@@ -171,20 +177,20 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
             this.label5.Location = new System.Drawing.Point(205, 120);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(66, 25);
+            this.label5.Size = new System.Drawing.Size(57, 20);
             this.label5.TabIndex = 39;
             this.label5.Text = "Roles";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
             this.label7.Location = new System.Drawing.Point(508, 67);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(65, 25);
+            this.label7.Size = new System.Drawing.Size(56, 20);
             this.label7.TabIndex = 41;
             this.label7.Text = "Grant";
             // 
@@ -200,6 +206,7 @@
             // 
             // panel1
             // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.lb_table_user);
             this.panel1.Controls.Add(this.dtg_grant);
             this.panel1.Controls.Add(this.label7);
@@ -216,8 +223,19 @@
             this.panel1.Size = new System.Drawing.Size(767, 346);
             this.panel1.TabIndex = 42;
             // 
+            // lb_table_user
+            // 
+            this.lb_table_user.AutoSize = true;
+            this.lb_table_user.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
+            this.lb_table_user.Location = new System.Drawing.Point(6, 120);
+            this.lb_table_user.Name = "lb_table_user";
+            this.lb_table_user.Size = new System.Drawing.Size(55, 20);
+            this.lb_table_user.TabIndex = 42;
+            this.lb_table_user.Text = "Table";
+            // 
             // panel2
             // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.cmb_table);
             this.panel2.Controls.Add(this.cb_roles_pk);
@@ -239,156 +257,6 @@
             this.panel2.Size = new System.Drawing.Size(767, 276);
             this.panel2.TabIndex = 43;
             // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(6, 46);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(111, 25);
-            this.label11.TabIndex = 47;
-            this.label11.Text = "Procedure";
-            // 
-            // cmb_procedure
-            // 
-            this.cmb_procedure.FormattingEnabled = true;
-            this.cmb_procedure.Location = new System.Drawing.Point(11, 74);
-            this.cmb_procedure.Name = "cmb_procedure";
-            this.cmb_procedure.Size = new System.Drawing.Size(223, 24);
-            this.cmb_procedure.TabIndex = 46;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(5, 2);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(76, 25);
-            this.label6.TabIndex = 45;
-            this.label6.Text = "User : ";
-            // 
-            // cmb_user
-            // 
-            this.cmb_user.FormattingEnabled = true;
-            this.cmb_user.Location = new System.Drawing.Point(87, 3);
-            this.cmb_user.Name = "cmb_user";
-            this.cmb_user.Size = new System.Drawing.Size(147, 24);
-            this.cmb_user.TabIndex = 44;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(261, 46);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(95, 25);
-            this.label2.TabIndex = 49;
-            this.label2.Text = "Function";
-            // 
-            // cmb_function
-            // 
-            this.cmb_function.FormattingEnabled = true;
-            this.cmb_function.Location = new System.Drawing.Point(266, 74);
-            this.cmb_function.Name = "cmb_function";
-            this.cmb_function.Size = new System.Drawing.Size(223, 24);
-            this.cmb_function.TabIndex = 48;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(508, 46);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(96, 25);
-            this.label3.TabIndex = 51;
-            this.label3.Text = "Package";
-            // 
-            // cmb_package
-            // 
-            this.cmb_package.FormattingEnabled = true;
-            this.cmb_package.Location = new System.Drawing.Point(513, 74);
-            this.cmb_package.Name = "cmb_package";
-            this.cmb_package.Size = new System.Drawing.Size(223, 24);
-            this.cmb_package.TabIndex = 50;
-            // 
-            // cb_user_proc
-            // 
-            this.cb_user_proc.AutoSize = true;
-            this.cb_user_proc.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_user_proc.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.cb_user_proc.ImageAlign = System.Drawing.ContentAlignment.TopRight;
-            this.cb_user_proc.Location = new System.Drawing.Point(11, 104);
-            this.cb_user_proc.Name = "cb_user_proc";
-            this.cb_user_proc.Size = new System.Drawing.Size(93, 20);
-            this.cb_user_proc.TabIndex = 42;
-            this.cb_user_proc.Text = "Grant User";
-            this.cb_user_proc.UseVisualStyleBackColor = true;
-            // 
-            // cb_roles_proc
-            // 
-            this.cb_roles_proc.AutoSize = true;
-            this.cb_roles_proc.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_roles_proc.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.cb_roles_proc.ImageAlign = System.Drawing.ContentAlignment.TopRight;
-            this.cb_roles_proc.Location = new System.Drawing.Point(134, 104);
-            this.cb_roles_proc.Name = "cb_roles_proc";
-            this.cb_roles_proc.Size = new System.Drawing.Size(100, 20);
-            this.cb_roles_proc.TabIndex = 52;
-            this.cb_roles_proc.Text = "Grant Roles";
-            this.cb_roles_proc.UseVisualStyleBackColor = true;
-            // 
-            // cb_user_fun
-            // 
-            this.cb_user_fun.AutoSize = true;
-            this.cb_user_fun.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_user_fun.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.cb_user_fun.ImageAlign = System.Drawing.ContentAlignment.TopRight;
-            this.cb_user_fun.Location = new System.Drawing.Point(266, 104);
-            this.cb_user_fun.Name = "cb_user_fun";
-            this.cb_user_fun.Size = new System.Drawing.Size(93, 20);
-            this.cb_user_fun.TabIndex = 53;
-            this.cb_user_fun.Text = "Grant User";
-            this.cb_user_fun.UseVisualStyleBackColor = true;
-            // 
-            // cb_roles_fun
-            // 
-            this.cb_roles_fun.AutoSize = true;
-            this.cb_roles_fun.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_roles_fun.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.cb_roles_fun.ImageAlign = System.Drawing.ContentAlignment.TopRight;
-            this.cb_roles_fun.Location = new System.Drawing.Point(389, 104);
-            this.cb_roles_fun.Name = "cb_roles_fun";
-            this.cb_roles_fun.Size = new System.Drawing.Size(100, 20);
-            this.cb_roles_fun.TabIndex = 54;
-            this.cb_roles_fun.Text = "Grant Roles";
-            this.cb_roles_fun.UseVisualStyleBackColor = true;
-            // 
-            // cb_user_pk
-            // 
-            this.cb_user_pk.AutoSize = true;
-            this.cb_user_pk.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_user_pk.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.cb_user_pk.ImageAlign = System.Drawing.ContentAlignment.TopRight;
-            this.cb_user_pk.Location = new System.Drawing.Point(513, 104);
-            this.cb_user_pk.Name = "cb_user_pk";
-            this.cb_user_pk.Size = new System.Drawing.Size(93, 20);
-            this.cb_user_pk.TabIndex = 55;
-            this.cb_user_pk.Text = "Grant User";
-            this.cb_user_pk.UseVisualStyleBackColor = true;
-            // 
-            // cb_roles_pk
-            // 
-            this.cb_roles_pk.AutoSize = true;
-            this.cb_roles_pk.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_roles_pk.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.cb_roles_pk.ImageAlign = System.Drawing.ContentAlignment.TopRight;
-            this.cb_roles_pk.Location = new System.Drawing.Point(636, 104);
-            this.cb_roles_pk.Name = "cb_roles_pk";
-            this.cb_roles_pk.Size = new System.Drawing.Size(100, 20);
-            this.cb_roles_pk.TabIndex = 56;
-            this.cb_roles_pk.Text = "Grant Roles";
-            this.cb_roles_pk.UseVisualStyleBackColor = true;
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -406,9 +274,172 @@
             this.cmb_table.Name = "cmb_table";
             this.cmb_table.Size = new System.Drawing.Size(327, 24);
             this.cmb_table.TabIndex = 57;
+            this.cmb_table.SelectedIndexChanged += new System.EventHandler(this.cmb_table_SelectedIndexChanged);
+            // 
+            // cb_roles_pk
+            // 
+            this.cb_roles_pk.AutoSize = true;
+            this.cb_roles_pk.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_roles_pk.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.cb_roles_pk.ImageAlign = System.Drawing.ContentAlignment.TopRight;
+            this.cb_roles_pk.Location = new System.Drawing.Point(636, 104);
+            this.cb_roles_pk.Name = "cb_roles_pk";
+            this.cb_roles_pk.Size = new System.Drawing.Size(100, 20);
+            this.cb_roles_pk.TabIndex = 56;
+            this.cb_roles_pk.Text = "Grant Roles";
+            this.cb_roles_pk.UseVisualStyleBackColor = true;
+            this.cb_roles_pk.Click += new System.EventHandler(this.cb_roles_pk_Click);
+            // 
+            // cb_user_pk
+            // 
+            this.cb_user_pk.AutoSize = true;
+            this.cb_user_pk.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_user_pk.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.cb_user_pk.ImageAlign = System.Drawing.ContentAlignment.TopRight;
+            this.cb_user_pk.Location = new System.Drawing.Point(513, 104);
+            this.cb_user_pk.Name = "cb_user_pk";
+            this.cb_user_pk.Size = new System.Drawing.Size(93, 20);
+            this.cb_user_pk.TabIndex = 55;
+            this.cb_user_pk.Text = "Grant User";
+            this.cb_user_pk.UseVisualStyleBackColor = true;
+            this.cb_user_pk.Click += new System.EventHandler(this.cb_user_pk_Click);
+            // 
+            // cb_roles_fun
+            // 
+            this.cb_roles_fun.AutoSize = true;
+            this.cb_roles_fun.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_roles_fun.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.cb_roles_fun.ImageAlign = System.Drawing.ContentAlignment.TopRight;
+            this.cb_roles_fun.Location = new System.Drawing.Point(389, 104);
+            this.cb_roles_fun.Name = "cb_roles_fun";
+            this.cb_roles_fun.Size = new System.Drawing.Size(100, 20);
+            this.cb_roles_fun.TabIndex = 54;
+            this.cb_roles_fun.Text = "Grant Roles";
+            this.cb_roles_fun.UseVisualStyleBackColor = true;
+            this.cb_roles_fun.Click += new System.EventHandler(this.cb_roles_fun_Click);
+            // 
+            // cb_user_fun
+            // 
+            this.cb_user_fun.AutoSize = true;
+            this.cb_user_fun.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_user_fun.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.cb_user_fun.ImageAlign = System.Drawing.ContentAlignment.TopRight;
+            this.cb_user_fun.Location = new System.Drawing.Point(266, 104);
+            this.cb_user_fun.Name = "cb_user_fun";
+            this.cb_user_fun.Size = new System.Drawing.Size(93, 20);
+            this.cb_user_fun.TabIndex = 53;
+            this.cb_user_fun.Text = "Grant User";
+            this.cb_user_fun.UseVisualStyleBackColor = true;
+            this.cb_user_fun.Click += new System.EventHandler(this.cb_user_fun_Click);
+            // 
+            // cb_roles_proc
+            // 
+            this.cb_roles_proc.AutoSize = true;
+            this.cb_roles_proc.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_roles_proc.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.cb_roles_proc.ImageAlign = System.Drawing.ContentAlignment.TopRight;
+            this.cb_roles_proc.Location = new System.Drawing.Point(134, 104);
+            this.cb_roles_proc.Name = "cb_roles_proc";
+            this.cb_roles_proc.Size = new System.Drawing.Size(100, 20);
+            this.cb_roles_proc.TabIndex = 52;
+            this.cb_roles_proc.Text = "Grant Roles";
+            this.cb_roles_proc.UseVisualStyleBackColor = true;
+            this.cb_roles_proc.Click += new System.EventHandler(this.cb_roles_proc_Click);
+            // 
+            // cb_user_proc
+            // 
+            this.cb_user_proc.AutoSize = true;
+            this.cb_user_proc.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_user_proc.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.cb_user_proc.ImageAlign = System.Drawing.ContentAlignment.TopRight;
+            this.cb_user_proc.Location = new System.Drawing.Point(11, 104);
+            this.cb_user_proc.Name = "cb_user_proc";
+            this.cb_user_proc.Size = new System.Drawing.Size(93, 20);
+            this.cb_user_proc.TabIndex = 42;
+            this.cb_user_proc.Text = "Grant User";
+            this.cb_user_proc.UseVisualStyleBackColor = true;
+            this.cb_user_proc.CheckedChanged += new System.EventHandler(this.cb_user_proc_CheckedChanged_1);
+            this.cb_user_proc.Click += new System.EventHandler(this.cb_user_proc_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
+            this.label3.Location = new System.Drawing.Point(508, 46);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(80, 20);
+            this.label3.TabIndex = 51;
+            this.label3.Text = "Package";
+            // 
+            // cmb_package
+            // 
+            this.cmb_package.FormattingEnabled = true;
+            this.cmb_package.Location = new System.Drawing.Point(513, 74);
+            this.cmb_package.Name = "cmb_package";
+            this.cmb_package.Size = new System.Drawing.Size(223, 24);
+            this.cmb_package.TabIndex = 50;
+            this.cmb_package.SelectedIndexChanged += new System.EventHandler(this.cmb_package_SelectedIndexChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
+            this.label2.Location = new System.Drawing.Point(261, 46);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(81, 20);
+            this.label2.TabIndex = 49;
+            this.label2.Text = "Function";
+            // 
+            // cmb_function
+            // 
+            this.cmb_function.FormattingEnabled = true;
+            this.cmb_function.Location = new System.Drawing.Point(266, 74);
+            this.cmb_function.Name = "cmb_function";
+            this.cmb_function.Size = new System.Drawing.Size(223, 24);
+            this.cmb_function.TabIndex = 48;
+            this.cmb_function.SelectedIndexChanged += new System.EventHandler(this.cmb_function_SelectedIndexChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
+            this.label6.Location = new System.Drawing.Point(5, 2);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(67, 20);
+            this.label6.TabIndex = 45;
+            this.label6.Text = "User : ";
+            // 
+            // cmb_user
+            // 
+            this.cmb_user.FormattingEnabled = true;
+            this.cmb_user.Location = new System.Drawing.Point(87, 3);
+            this.cmb_user.Name = "cmb_user";
+            this.cmb_user.Size = new System.Drawing.Size(147, 24);
+            this.cmb_user.TabIndex = 44;
+            this.cmb_user.SelectedIndexChanged += new System.EventHandler(this.cmb_user_SelectedIndexChange);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
+            this.label11.Location = new System.Drawing.Point(6, 46);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(95, 20);
+            this.label11.TabIndex = 47;
+            this.label11.Text = "Procedure";
+            // 
+            // cmb_procedure
+            // 
+            this.cmb_procedure.FormattingEnabled = true;
+            this.cmb_procedure.Location = new System.Drawing.Point(11, 74);
+            this.cmb_procedure.Name = "cmb_procedure";
+            this.cmb_procedure.Size = new System.Drawing.Size(223, 24);
+            this.cmb_procedure.TabIndex = 46;
+            this.cmb_procedure.SelectedIndexChanged += new System.EventHandler(this.cmb_procedure_SelectedIndexChanged);
             // 
             // panel3
             // 
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel3.Controls.Add(this.lb_user);
             this.panel3.Controls.Add(this.btn_Grant_Revoke_Role);
             this.panel3.Controls.Add(this.lb_table_roles);
@@ -425,6 +456,36 @@
             this.panel3.Size = new System.Drawing.Size(426, 628);
             this.panel3.TabIndex = 59;
             // 
+            // lb_user
+            // 
+            this.lb_user.AutoSize = true;
+            this.lb_user.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
+            this.lb_user.Location = new System.Drawing.Point(13, 175);
+            this.lb_user.Name = "lb_user";
+            this.lb_user.Size = new System.Drawing.Size(49, 20);
+            this.lb_user.TabIndex = 52;
+            this.lb_user.Text = "User";
+            // 
+            // btn_Grant_Revoke_Role
+            // 
+            this.btn_Grant_Revoke_Role.Location = new System.Drawing.Point(18, 214);
+            this.btn_Grant_Revoke_Role.Name = "btn_Grant_Revoke_Role";
+            this.btn_Grant_Revoke_Role.Size = new System.Drawing.Size(188, 62);
+            this.btn_Grant_Revoke_Role.TabIndex = 51;
+            this.btn_Grant_Revoke_Role.Text = "Grant";
+            this.btn_Grant_Revoke_Role.UseVisualStyleBackColor = true;
+            this.btn_Grant_Revoke_Role.Click += new System.EventHandler(this.btn_Grant_Revoke_Role_Click);
+            // 
+            // lb_table_roles
+            // 
+            this.lb_table_roles.AutoSize = true;
+            this.lb_table_roles.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
+            this.lb_table_roles.Location = new System.Drawing.Point(13, 70);
+            this.lb_table_roles.Name = "lb_table_roles";
+            this.lb_table_roles.Size = new System.Drawing.Size(55, 20);
+            this.lb_table_roles.TabIndex = 50;
+            this.lb_table_roles.Text = "Table";
+            // 
             // cb_select_ro
             // 
             this.cb_select_ro.AutoSize = true;
@@ -437,6 +498,7 @@
             this.cb_select_ro.TabIndex = 40;
             this.cb_select_ro.Text = "Select";
             this.cb_select_ro.UseVisualStyleBackColor = true;
+            this.cb_select_ro.Click += new System.EventHandler(this.cb_select_ro_Click);
             // 
             // cb_insert_ro
             // 
@@ -450,14 +512,16 @@
             this.cb_insert_ro.TabIndex = 41;
             this.cb_insert_ro.Text = "Insert";
             this.cb_insert_ro.UseVisualStyleBackColor = true;
+            this.cb_insert_ro.CheckedChanged += new System.EventHandler(this.cb_insert_ro_CheckedChanged);
+            this.cb_insert_ro.Click += new System.EventHandler(this.cb_insert_ro_Click);
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
             this.label9.Location = new System.Drawing.Point(174, 349);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(65, 25);
+            this.label9.Size = new System.Drawing.Size(56, 20);
             this.label9.TabIndex = 47;
             this.label9.Text = "Grant";
             // 
@@ -473,6 +537,7 @@
             this.cb_update_ro.TabIndex = 42;
             this.cb_update_ro.Text = "Update";
             this.cb_update_ro.UseVisualStyleBackColor = true;
+            this.cb_update_ro.Click += new System.EventHandler(this.cb_update_ro_Click);
             // 
             // dtg_grant_roles
             // 
@@ -496,14 +561,15 @@
             this.cb_delete_ro.TabIndex = 43;
             this.cb_delete_ro.Text = "Delete";
             this.cb_delete_ro.UseVisualStyleBackColor = true;
+            this.cb_delete_ro.Click += new System.EventHandler(this.cb_delete_ro_Click);
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold);
             this.label10.Location = new System.Drawing.Point(13, 22);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(66, 25);
+            this.label10.Size = new System.Drawing.Size(57, 20);
             this.label10.TabIndex = 45;
             this.label10.Text = "Roles";
             // 
@@ -514,51 +580,24 @@
             this.cmb_roles.Name = "cmb_roles";
             this.cmb_roles.Size = new System.Drawing.Size(185, 24);
             this.cmb_roles.TabIndex = 44;
+            this.cmb_roles.SelectedIndexChanged += new System.EventHandler(this.cmb_roles_SelectedIndexChanged);
             // 
-            // lb_table_roles
+            // btn_accMng
             // 
-            this.lb_table_roles.AutoSize = true;
-            this.lb_table_roles.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_table_roles.Location = new System.Drawing.Point(13, 70);
-            this.lb_table_roles.Name = "lb_table_roles";
-            this.lb_table_roles.Size = new System.Drawing.Size(67, 25);
-            this.lb_table_roles.TabIndex = 50;
-            this.lb_table_roles.Text = "Table";
-            // 
-            // lb_table_user
-            // 
-            this.lb_table_user.AutoSize = true;
-            this.lb_table_user.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_table_user.Location = new System.Drawing.Point(6, 120);
-            this.lb_table_user.Name = "lb_table_user";
-            this.lb_table_user.Size = new System.Drawing.Size(67, 25);
-            this.lb_table_user.TabIndex = 42;
-            this.lb_table_user.Text = "Table";
-            // 
-            // btn_Grant_Revoke_Role
-            // 
-            this.btn_Grant_Revoke_Role.Location = new System.Drawing.Point(18, 214);
-            this.btn_Grant_Revoke_Role.Name = "btn_Grant_Revoke_Role";
-            this.btn_Grant_Revoke_Role.Size = new System.Drawing.Size(188, 62);
-            this.btn_Grant_Revoke_Role.TabIndex = 51;
-            this.btn_Grant_Revoke_Role.Text = "Grant";
-            this.btn_Grant_Revoke_Role.UseVisualStyleBackColor = true;
-            // 
-            // lb_user
-            // 
-            this.lb_user.AutoSize = true;
-            this.lb_user.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_user.Location = new System.Drawing.Point(13, 175);
-            this.lb_user.Name = "lb_user";
-            this.lb_user.Size = new System.Drawing.Size(57, 25);
-            this.lb_user.TabIndex = 52;
-            this.lb_user.Text = "User";
+            this.btn_accMng.Location = new System.Drawing.Point(1020, 31);
+            this.btn_accMng.Name = "btn_accMng";
+            this.btn_accMng.Size = new System.Drawing.Size(188, 42);
+            this.btn_accMng.TabIndex = 53;
+            this.btn_accMng.Text = "Account Management";
+            this.btn_accMng.UseVisualStyleBackColor = true;
+            this.btn_accMng.Click += new System.EventHandler(this.btn_accMng_Click);
             // 
             // Admin_Privilege
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1216, 707);
+            this.Controls.Add(this.btn_accMng);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -622,5 +661,6 @@
         private System.Windows.Forms.Label lb_table_roles;
         private System.Windows.Forms.Button btn_Grant_Revoke_Role;
         private System.Windows.Forms.Label lb_user;
+        private System.Windows.Forms.Button btn_accMng;
     }
 }

@@ -1,61 +1,64 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
-
 
 namespace DOAN_BMCSDL
 {
     public class TableSpace
     {
-        OracleConnection conn;
+        private OracleConnection conn;
 
-        public TableSpace(OracleConnection conn)
+        public TableSpace(OracleConnection connection)
         {
-            this.conn = conn;
+            conn = connection;
         }
+
         public DataTable GetName_Tablespace()
         {
+            DataTable data = null;
+
             try
             {
-                string Procedure = "P_GET_TABLESPACES";
+                // Tên thủ tục lưu trữ
+                string procedureName = "P_GET_TABLESPACES";
 
-                OracleCommand cmd = new OracleCommand();
-                cmd.Connection = conn;
-                cmd.CommandText = Procedure;
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                OracleParameter resultPara = new OracleParameter();
-                resultPara.ParameterName = "@Result";
-                resultPara.OracleDbType = OracleDbType.RefCursor;
-                resultPara.Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(resultPara);
-
-                cmd.ExecuteNonQuery();
-
-                if (resultPara.Value != DBNull.Value)
+                using (OracleCommand cmd = new OracleCommand(procedureName, conn))
                 {
-                    OracleDataReader ret = ((OracleRefCursor)resultPara.Value).GetDataReader();
-                    DataTable data = new DataTable();
-                    data.Load(ret);
-                    return data;
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Tạo tham số đầu ra kiểu RefCursor
+                    OracleParameter resultPara = new OracleParameter
+                    {
+                        ParameterName = "@Result",
+                        OracleDbType = OracleDbType.RefCursor,
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(resultPara);
+
+                    // Thực thi thủ tục
+                    cmd.ExecuteNonQuery();
+
+                    // Kiểm tra nếu giá trị trả về không phải DBNull
+                    if (resultPara.Value != DBNull.Value)
+                    {
+                        // Lấy dữ liệu từ RefCursor
+                        OracleDataReader reader = ((OracleRefCursor)resultPara.Value).GetDataReader();
+
+                        // Đọc dữ liệu vào DataTable
+                        data = new DataTable();
+                        data.Load(reader);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.GetBaseException().ToString());
-       
+                // Xử lý lỗi chi tiết
+                MessageBox.Show("Lỗi khi gọi thủ tục: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            return null;
-        }
 
-        
+            return data;
+        }
     }
 }

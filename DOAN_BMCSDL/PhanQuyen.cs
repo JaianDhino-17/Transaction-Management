@@ -175,8 +175,8 @@ namespace DOAN_BMCSDL
             }
             return null;
         }
-
-        public OracleDataReader Get_Roles_User(string username)
+        // LOI
+        public DataTable Get_Roles_User(string username)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace DOAN_BMCSDL
                 UserName.OracleDbType = OracleDbType.Varchar2;
                 UserName.Value = username.ToUpper();
                 UserName.Direction = ParameterDirection.Input;
-                cmd.Parameters.Add(username);
+                cmd.Parameters.Add(UserName);
 
                 OracleParameter resultPara = new OracleParameter();
                 resultPara.ParameterName = "@Result";
@@ -202,12 +202,12 @@ namespace DOAN_BMCSDL
 
                 cmd.ExecuteNonQuery();
 
-                if (UserName.Value != DBNull.Value)
+                if (resultPara.Value != DBNull.Value)
                 {
                     OracleDataReader ret = ((OracleRefCursor)resultPara.Value).GetDataReader();
                     DataTable data= new DataTable();
                     data.Load(ret);
-                    return ret;
+                    return data;
                 }
 
             }
@@ -238,7 +238,7 @@ namespace DOAN_BMCSDL
                 cmd.Parameters.Add(userName);
 
                 OracleParameter Roles = new OracleParameter();
-                Roles.ParameterName = "@pro_type";
+                Roles.ParameterName = "@roles";
                 Roles.OracleDbType = OracleDbType.Varchar2;
                 Roles.Value = roles.ToUpper();
                 Roles.Direction = ParameterDirection.Input;
@@ -246,7 +246,7 @@ namespace DOAN_BMCSDL
 
                 OracleParameter resultPara = new OracleParameter();
                 resultPara.ParameterName = "@Result";
-                resultPara.OracleDbType = OracleDbType.RefCursor;
+                resultPara.OracleDbType = OracleDbType.Int16;
                 resultPara.Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(resultPara);
 
@@ -266,7 +266,7 @@ namespace DOAN_BMCSDL
             return -1;
         }
 
-        public OracleDataReader Get_Grant_User(string username)
+        public DataTable Get_Grant_User(string username)
         {
             try
             {
@@ -282,7 +282,7 @@ namespace DOAN_BMCSDL
                 UserName.OracleDbType = OracleDbType.Varchar2;
                 UserName.Value = username.ToUpper();
                 UserName.Direction = ParameterDirection.Input;
-                cmd.Parameters.Add(username);
+                cmd.Parameters.Add(UserName);
 
                 OracleParameter resultPara = new OracleParameter();
                 resultPara.ParameterName = "@Result";
@@ -292,12 +292,12 @@ namespace DOAN_BMCSDL
 
                 cmd.ExecuteNonQuery();
 
-                if (UserName.Value != DBNull.Value)
+                if (resultPara.Value != DBNull.Value)
                 {
                     OracleDataReader ret = ((OracleRefCursor)resultPara.Value).GetDataReader();
                     DataTable data = new DataTable();
                     data.Load(ret);
-                    return ret;
+                    return data;
                 }
 
             }
@@ -325,19 +325,19 @@ namespace DOAN_BMCSDL
                 UserName.OracleDbType = OracleDbType.Varchar2;
                 UserName.Value = username.ToUpper();
                 UserName.Direction = ParameterDirection.Input;
-                cmd.Parameters.Add(username);
+                cmd.Parameters.Add(UserName);
 
                 OracleParameter UserSchema = new OracleParameter();
                 UserSchema.ParameterName = "@userschema";
                 UserSchema.OracleDbType = OracleDbType.Varchar2;
-                UserSchema.Value = username.ToUpper();
+                UserSchema.Value = userschema.ToUpper();
                 UserSchema.Direction = ParameterDirection.Input;
                 cmd.Parameters.Add(UserSchema);
 
                 OracleParameter TableName = new OracleParameter();
                 TableName.ParameterName = "@tablename";
                 TableName.OracleDbType = OracleDbType.Varchar2;
-                TableName.Value = username.ToUpper();
+                TableName.Value = tab.ToUpper();
                 TableName.Direction = ParameterDirection.Input;
                 cmd.Parameters.Add(TableName);
 
@@ -352,8 +352,7 @@ namespace DOAN_BMCSDL
                 if (UserName.Value != DBNull.Value)
                 {
                     OracleDataReader ret = ((OracleRefCursor)resultPara.Value).GetDataReader();
-                    DataTable data = new DataTable();
-                    data.Load(ret);
+                    
                     return ret;
                 }
 
@@ -366,7 +365,7 @@ namespace DOAN_BMCSDL
             return null;
         }
 
-        public bool Get_Revoke_Pro(string username, string userschema, string pro_tab,string type_pro,int dk)
+        public bool Grant_Revoke_Pro(string username, string userschema, string pro_tab,string type_pro,int dk)
         {
             try
             {
@@ -382,26 +381,26 @@ namespace DOAN_BMCSDL
                 UserName.OracleDbType = OracleDbType.Varchar2;
                 UserName.Value = username.ToUpper();
                 UserName.Direction = ParameterDirection.Input;
-                cmd.Parameters.Add(username);
+                cmd.Parameters.Add(UserName);
 
                 OracleParameter UserSchema = new OracleParameter();
                 UserSchema.ParameterName = "@userschema";
                 UserSchema.OracleDbType = OracleDbType.Varchar2;
-                UserSchema.Value = username.ToUpper();
+                UserSchema.Value = userschema.ToUpper();
                 UserSchema.Direction = ParameterDirection.Input;
                 cmd.Parameters.Add(UserSchema);
 
                 OracleParameter ProTab = new OracleParameter();
                 ProTab.ParameterName = "@tablename";
                 ProTab.OracleDbType = OracleDbType.Varchar2;
-                ProTab.Value = username.ToUpper();
+                ProTab.Value = pro_tab.ToUpper();
                 ProTab.Direction = ParameterDirection.Input;
                 cmd.Parameters.Add(ProTab);
 
                 OracleParameter TypePro = new OracleParameter();
                 TypePro.ParameterName = "@typepro";
                 TypePro.OracleDbType = OracleDbType.Varchar2;
-                TypePro.Value = username.ToUpper();
+                TypePro.Value = type_pro.ToUpper();
                 TypePro.Direction = ParameterDirection.Input;
                 cmd.Parameters.Add(TypePro);
 
@@ -421,13 +420,13 @@ namespace DOAN_BMCSDL
             }
             catch
             {
-                MessageBox.Show("Lỗi gọi chạy thủ tục : pro_grant_revoke");
+                MessageBox.Show("Lỗi gọi chạy thủ tục : PRO_GRANT_REVOKE");
                 return false;
             }
             
         }
 
-        public bool Get_Revoke_Roles(string username, string role, int dk)
+        public bool Grant_Revoke_Roles(string username, string role, int dk)
         {
             try
             {
@@ -443,14 +442,14 @@ namespace DOAN_BMCSDL
                 UserName.OracleDbType = OracleDbType.Varchar2;
                 UserName.Value = username.ToUpper();
                 UserName.Direction = ParameterDirection.Input;
-                cmd.Parameters.Add(username);
+                cmd.Parameters.Add(UserName);
 
-                OracleParameter UserSchema = new OracleParameter();
-                UserSchema.ParameterName = "@userschema";
-                UserSchema.OracleDbType = OracleDbType.Varchar2;
-                UserSchema.Value = username.ToUpper();
-                UserSchema.Direction = ParameterDirection.Input;
-                cmd.Parameters.Add(UserSchema);
+                OracleParameter Role = new OracleParameter();
+                Role.ParameterName = "@role";
+                Role.OracleDbType = OracleDbType.Varchar2;
+                Role.Value = role.ToUpper();
+                Role.Direction = ParameterDirection.Input;
+                cmd.Parameters.Add(Role);
 
                 
 
@@ -470,7 +469,7 @@ namespace DOAN_BMCSDL
             }
             catch
             {
-                MessageBox.Show("Lỗi gọi chạy thủ tục : pro_grant_revoke_Roles");
+                MessageBox.Show("Lỗi gọi chạy thủ tục : PRO_GRANT_REVOKE_ROLES");
                 return false;
             }
 
