@@ -9,5 +9,7 @@ namespace DOAN_BMCSDL
     internal class cac
     {
         string abcd;
+        string dfgfhgjhk;
+
     }
 }
