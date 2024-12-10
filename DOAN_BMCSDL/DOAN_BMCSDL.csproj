@@ -188,6 +188,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TableSpace.cs" />
+    <Compile Include="testgit.cs" />
     <Compile Include="TopUp.cs">
       <SubType>Form</SubType>
     </Compile>
