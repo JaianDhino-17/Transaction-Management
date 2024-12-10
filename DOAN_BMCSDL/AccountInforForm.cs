@@ -58,7 +58,7 @@ namespace DOAN_BMCSDL
                 {
                     connection.Open();
 
-                    // Giả sử bạn có thể kiểm tra session bằng một truy vấn đến Oracle
+                   
                     string checkSessionQuery = $"SELECT COUNT(*) FROM v$session WHERE username = '{LoginForm.username.ToUpper()}'"; // Điều chỉnh theo nhu cầu
                     OracleCommand command = new OracleCommand(checkSessionQuery, connection);
 
@@ -121,9 +121,13 @@ namespace DOAN_BMCSDL
                         cmd.Parameters.Add("p_username", OracleDbType.NVarchar2).Value = LoginForm.username;
 
                         cmd.ExecuteNonQuery();
+                        Database.conn.Close();
+                        this.Close();
+                        LoginForm loginForm = new LoginForm();
+                        loginForm.ShowDialog();
                     }
 
-                    Database.conn.Close();
+                   
                 }
                 catch (Exception ex)
                 {

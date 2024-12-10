@@ -13,7 +13,7 @@ namespace DOAN_BMCSDL
 {
     public partial class Add : Form
     {
-        private string connectionString = @"Data Source=localhost:1521/orcl;Persist Security Info=True;User ID=DoAn_Nhom4;Password=thedung4";
+        private string connectionString = @"Data Source=localhost:1521/orcl;Persist Security Info=True;User ID=DoAnNhom4;Password=thedung4";
 
         public Add()
         {
