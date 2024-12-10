@@ -30,6 +30,7 @@ namespace DOAN_BMCSDL
             string query = "SELECT * FROM ACCOUNTS WHERE ACCOUNTID = '" + accID + "'";
             using (OracleCommand cmd = new OracleCommand(query, Database.conn))
             {
+                //Database.conn.Open();
                 using (OracleDataReader reader = cmd.ExecuteReader())
                 {
                     if (reader.Read())
@@ -44,9 +45,9 @@ namespace DOAN_BMCSDL
                                 return;
                             }
 
-                            int p = int.Parse(textBox3.Text);
-                            int q = int.Parse(textBox4.Text);
-                            AsymmestricEncryption.pub_k_And_pri_k(p,q);
+                            //int p = int.Parse(textBox3.Text);
+                            //int q = int.Parse(textBox4.Text);
+                            //AsymmestricEncryption.pub_k_And_pri_k(p,q);
                             string EnMount = AsymmestricEncryption.Encrypt_RSA(amount);
                             string EnContext = AsymmestricEncryption.Encrypt_RSA(context);
 

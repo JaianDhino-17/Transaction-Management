@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Numerics;
 using System.Windows.Forms;
 using System.IO;
+using Oracle.ManagedDataAccess.Client;
+using System.Data;
+using Oracle.ManagedDataAccess.Types;
 
 namespace DOAN_BMCSDL
 {
@@ -59,49 +62,149 @@ namespace DOAN_BMCSDL
             // Lưu trữ n vào file
             File.WriteAllText("nValue.pem", n.ToString());
         }
-        public static string Encrypt_RSA(string plaintext)
+
+        //                      MÃ HÓA MỨC ỨNG DỤNG (ĐÃ TEST)
+
+        //public static string Encrypt_RSA(string plaintext)
+        //{
+        //    char[] charArray = plaintext.ToCharArray();
+        //    string stringArray = "";
+        //    for (int i = 0; i < charArray.Length; i++)
+        //    {
+        //        for (int j = 0; j < SymmetricEncryption.character.Length; j++)
+        //        {
+        //            if (char.ToUpper(charArray[i]) == SymmetricEncryption.character[j])
+        //            {
+        //                string C;
+        //                BigInteger value = new BigInteger(j);
+        //                BigInteger publicKey = BigInteger.Parse(File.ReadAllText("publicKey.pem"));
+        //                BigInteger n = BigInteger.Parse(File.ReadAllText("nValue.pem"));
+        //                BigInteger encrypted = BigInteger.ModPow(value, publicKey, n);
+        //                int encrypted2 = int.Parse(encrypted.ToString());
+        //                if (encrypted >= 0 && encrypted <= 9)
+        //                    C = "0" + $"{encrypted}";
+        //                else
+        //                    C = $"{encrypted}";
+        //                stringArray += C;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    return stringArray;
+        //}
+
+        //public static string Decrypt_RSA(string ciphertext)
+        //{
+        //    char[] charArray = ciphertext.ToCharArray();
+        //    string stringArray = "";
+        //    for (int i = 0; i < charArray.Length; i = i + 2)
+        //    {
+        //        string charPair = charArray[i].ToString() + charArray[i + 1].ToString();
+        //        int intPair = int.Parse(charPair);
+        //        BigInteger value = new BigInteger(intPair);
+        //        BigInteger privateKey = BigInteger.Parse(File.ReadAllText("privateKey.pem"));
+        //        BigInteger n = BigInteger.Parse(File.ReadAllText("nValue.pem"));
+        //        BigInteger decrypted = BigInteger.ModPow(value, privateKey, n);
+        //        stringArray += SymmetricEncryption.character[(int)decrypted];
+        //    }
+        //    return stringArray;
+        //}
+
+
+        //                                  MÃ HÓA MỨC CƠ SỞ DỮ LIỆU
+        public static string Encrypt_RSA(string plainText)
         {
-            char[] charArray = plaintext.ToCharArray();
-            string stringArray = "";
-            for (int i = 0; i < charArray.Length; i++)
+            try
             {
-                for (int j = 0; j < SymmetricEncryption.character.Length; j++)
+                string Function = "CRYPTO.RSA_ENCRYPT";
+
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = Database.conn;
+                cmd.CommandText = Function;
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                OracleParameter resultParam = new OracleParameter();
+                resultParam.ParameterName = "Result";
+                resultParam.OracleDbType = OracleDbType.Varchar2;
+                resultParam.Size = 10000;
+                resultParam.Direction = ParameterDirection.ReturnValue;
+                cmd.Parameters.Add(resultParam);
+
+                OracleParameter pltext = new OracleParameter();
+                pltext.ParameterName = "@PLAIN_TEXT";
+                pltext.OracleDbType = OracleDbType.Varchar2;
+                pltext.Value = plainText;
+                pltext.Direction = ParameterDirection.Input;
+                cmd.Parameters.Add(pltext);
+
+                OracleParameter key = new OracleParameter();
+                key.ParameterName = "@PRIVATE_KEY";
+                key.OracleDbType = OracleDbType.Varchar2;
+                key.Value = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGGhrI98Or/y0z8o+8DyWJ3VQF9+Vd+/2w1pf/ucHv9/sJMLOMMv/3WgsoLqUo2FcHUVLV8pW9DTzrwETJ6wCKRugkkzBOuPampEMRSYyAkZWEqrdgiWZT/LcrKAfjuiSvDXy6IqCLOImc3yKbG3Zn9+OkRsuFoPOfcb5qzuoPEQIDAQAB";
+                key.Direction = ParameterDirection.Input;
+                cmd.Parameters.Add(key);
+
+                cmd.ExecuteNonQuery();
+
+                if (resultParam.Value != DBNull.Value)
                 {
-                    if (char.ToUpper(charArray[i]) == SymmetricEncryption.character[j])
-                    {
-                        string C;
-                        BigInteger value = new BigInteger(j);
-                        BigInteger publicKey = BigInteger.Parse(File.ReadAllText("publicKey.pem"));
-                        BigInteger n = BigInteger.Parse(File.ReadAllText("nValue.pem"));
-                        BigInteger encrypted = BigInteger.ModPow(value, publicKey, n);
-                        int encrypted2 = int.Parse(encrypted.ToString());
-                        if (encrypted >= 0 && encrypted <= 9)
-                            C = "0" + $"{encrypted}";
-                        else
-                            C = $"{encrypted}";
-                        stringArray += C;
-                        break;
-                    }
+                    OracleString ret = (OracleString)resultParam.Value;
+                    return ret.ToString();
                 }
             }
-            return stringArray;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.GetBaseException().ToString());
+            }
+            return null;
         }
 
-        public static string Decrypt_RSA(string ciphertext)
+
+        public static string Decrypt_RSA(string plainText)
         {
-            char[] charArray = ciphertext.ToCharArray();
-            string stringArray = "";
-            for (int i = 0; i < charArray.Length; i = i + 2)
+            try
             {
-                string charPair = charArray[i].ToString() + charArray[i + 1].ToString();
-                int intPair = int.Parse(charPair);
-                BigInteger value = new BigInteger(intPair);
-                BigInteger privateKey = BigInteger.Parse(File.ReadAllText("privateKey.pem"));
-                BigInteger n = BigInteger.Parse(File.ReadAllText("nValue.pem"));
-                BigInteger decrypted = BigInteger.ModPow(value, privateKey, n);
-                stringArray += SymmetricEncryption.character[(int)decrypted];
+                string Function = "CRYPTO.RSA_DECRYPT";
+
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = Database.conn;
+                cmd.CommandText = Function;
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                OracleParameter resultParam = new OracleParameter();
+                resultParam.ParameterName = "Result";
+                resultParam.OracleDbType = OracleDbType.Varchar2;
+                resultParam.Size = 10000;
+                resultParam.Direction = ParameterDirection.ReturnValue;
+                cmd.Parameters.Add(resultParam);
+
+                OracleParameter pltext = new OracleParameter();
+                pltext.ParameterName = "@ENCRYPTED_TEXT";
+                pltext.OracleDbType = OracleDbType.Varchar2;
+                pltext.Value = plainText;
+                pltext.Direction = ParameterDirection.Input;
+                cmd.Parameters.Add(pltext);
+
+                OracleParameter key = new OracleParameter();
+                key.ParameterName = "@PUBLIC_KEY";
+                key.OracleDbType = OracleDbType.Varchar2;
+                key.Value = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAIYaGsj3w6v/LTPyj7wPJYndVAX35V37/bDWl/+5we/3+wkws4wy//daCygupSjYVwdRUtXylb0NPOvARMnrAIpG6CSTME649qakQxFJjICRlYSqt2CJZlP8tysoB+O6JK8NfLoioIs4iZzfIpsbdmf346RGy4Wg859xvmrO6g8RAgMBAAECgYAGDofHK+maixvvjLUROV3orCZvXpLte8QpiIe09R7dR8X+1ERHwMXu1hJK7lBnV94WZoXnQ92ffEmUHEr/E64if/QorHsCjko9imZgVUJS7+zkhmK3+mRfsdW/N6ndIjCTkI13caABR4TXmTnlKdyMfkoTlYCdybMAvRl2IhZPAQJBALwr0tU913PTYFR26i5XgTef4fWuY1EtQfUa5XxYUpEmocp/2lMZx/mVzHzavTPwdAVgT6cbXmUlxLL9zaKAPcUCQQC2cNlMKIRNt7M6s7M+9KJxf6EKNAcn7tuGcqrpK7FUFnZU40ZKCfiQEPMlQ9rP2dBqVYDw99NQfhN4rlheiYzdAkEAnD2HAagnjPSlt3xFVdUyZY1LgUMbE/wQGAQNKAHuDLeW/xzJmtZ9RK8s6z50evvcWdpuSMJgzntdp4E1jQgOQQJAb+ZVkZ3EUHrdBqNTzMh1nlHe74gr33Vk1lkctTmkYWQJnlVsNltZRtvulqvA2P3LFH1vQd1vkg5SWRHuh8WsTQJANauq4uWOV2zDIMDetoYpTJtUJHluW+QfTOahbPA4KaYYbuAmgq+Ja0J2TQ1rA8s4YuKYbk7/Q+32Kpd0OKI3ww==";
+                key.Direction = ParameterDirection.Input;
+                cmd.Parameters.Add(key);
+
+                cmd.ExecuteNonQuery();
+
+                if (resultParam.Value != DBNull.Value)
+                {
+                    OracleString ret = (OracleString)resultParam.Value;
+                    return ret.ToString();
+                }
             }
-            return stringArray;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.GetBaseException().ToString());
+            }
+            return null;
         }
         public static string Encrypt_RSAwithPublic_key(string plaintext, BigInteger pu_k)
         {

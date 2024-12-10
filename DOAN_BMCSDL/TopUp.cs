@@ -27,7 +27,6 @@ namespace DOAN_BMCSDL
             string accID = textBox1.Text;
             string amount = textBox2.Text;
             string context = richTextBox1.Text;
-            int key = int.Parse(textBox3.Text);
             string query = "SELECT * FROM ACCOUNTS WHERE ACCOUNTID = '" + accID + "'";
             using (OracleCommand cmd = new OracleCommand(query, Database.conn))
             {
@@ -39,8 +38,8 @@ namespace DOAN_BMCSDL
                         if (conFirm == DialogResult.Yes)
                         {
                             //SymmetricEncryption symmetricEncryption = new SymmetricEncryption();
-                            string EnAmount = SymmetricEncryption.EncryptAddition(amount, key) ;
-                            string EnContext = SymmetricEncryption.EncryptAddition(context, key);
+                            string EnAmount = SymmetricEncryption.EncryptCeasar_Func(amount) ;
+                            string EnContext = SymmetricEncryption.EncryptCeasar_Func(context);
                             string query2 = "INSERT INTO TRANSACTIONS (AccountID,TransactionType,Amount,TransactionDate,EncryptedDetails) VALUES ('" + accID + "','Nạp tiền','" + EnAmount + "', TO_DATE('" + DateTime.Now.ToString("yyyy-MM-dd") + "', 'YYYY-MM-DD'), '"+ EnContext +"')";
                             using (OracleCommand cmd2 = new OracleCommand(query2, Database.conn))
                             {

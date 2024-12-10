@@ -45,9 +45,9 @@ CREATE TABLE Transactions (
     TransactionID NUMBER PRIMARY KEY,
     AccountID NUMBER,
     TransactionType NVARCHAR2(20),
-    Amount VARCHAR2(20),
+    Amount VARCHAR2(2000),
     TransactionDate DATE,
-    EncryptedDetails VARCHAR2(255),
+    EncryptedDetails VARCHAR2(2000),
     FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID)
 );
 
@@ -145,69 +145,139 @@ BEGIN
 END;
 
 ------------------Symmetric Encryption---------------------------------------
-GRANT EXECUTE ON DBMS_CRYPTO TO DOANNHOM4;
-GRANT CREATE PROCEDURE TO DOANNHOM4;
-SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE = 'DOANNHOM4';
-SELECT * FROM DBA_SYS_PRIVS WHERE GRANTEE = 'DOANNHOM4';
-SELECT * FROM DBA_ROLE_PRIVS WHERE GRANTEE = 'DOANNHOM4';
-SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE = 'DOANNHOM4';
 
---HAM MA HOA DES 
-/
-CREATE OR REPLACE FUNCTION MaHoaDES (
-    p_plaintext CHAR
-) RETURN VARCHAR2 IS
-    i_key RAW(8) := UTL_RAW.cast_to_raw('Th3Jung4'); 
-    i_encrypted RAW(100);
+CREATE OR REPLACE FUNCTION SHIFTCHAR(C CHAR, K NUMBER)
+RETURN CHAR
+IS
+    T NUMBER(2);
+    CHAR_CODE NUMBER(3);
+    OFFSET NUMBER;
 BEGIN
-    i_encrypted := DBMS_CRYPTO.ENCRYPT(
-        src => UTL_RAW.cast_to_raw(p_plaintext), 
-        typ => DBMS_CRYPTO.DES_CBC_PKCS5,      
-        key => i_key
-    );
-    -- Chuyển đổi RAW sang Base64 để trả về kiểu VARCHAR2
-    RETURN TO_CHAR(UTL_ENCODE.BASE64_ENCODE(i_encrypted));
+    CHAR_CODE := ASCII(C);
+
+    -- Xử lý ký tự chữ cái (A-Z)
+    IF CHAR_CODE BETWEEN ASCII('A') AND ASCII('Z') THEN
+        T := ASCII('A');
+        OFFSET := (ASCII(C) - T + K) MOD 26;
+        IF OFFSET < 0 THEN OFFSET := OFFSET + 26; END IF;
+        RETURN CHR(T + OFFSET);
+
+    -- Xử lý ký tự chữ cái thường (a-z)
+    ELSIF CHAR_CODE BETWEEN ASCII('a') AND ASCII('z') THEN
+        T := ASCII('a');
+        OFFSET := (ASCII(C) - T + K) MOD 26;
+        IF OFFSET < 0 THEN OFFSET := OFFSET + 26; END IF;
+        RETURN CHR(T + OFFSET);
+
+    -- Xử lý ký tự số (0-9)
+    ELSIF CHAR_CODE BETWEEN ASCII('0') AND ASCII('9') THEN
+        T := ASCII('0');
+        OFFSET := (ASCII(C) - T + K) MOD 10;
+        IF OFFSET < 0 THEN OFFSET := OFFSET + 10; END IF;
+        RETURN CHR(T + OFFSET);
+
+    ELSE
+        RETURN NULL; -- Không xử lý các ký tự khác
+    END IF;
 END;
 /
-
---HAM GIAI MA DES
-/
-CREATE OR REPLACE FUNCTION GiaiMaDES (
-    p_encrypted VARCHAR2
-) RETURN VARCHAR2 IS
-    i_key RAW(8) := UTL_RAW.cast_to_raw('Th3Jung4');
-    i_encrypted RAW(100);
-    i_decrypted RAW(100);
+CREATE OR REPLACE FUNCTION ENCRYPTCAESARCIPHER(STR VARCHAR, K NUMBER)
+RETURN VARCHAR
+AS
+    I NUMBER(2);
+    LEN NUMBER(5);
+    KQ VARCHAR(100):='';
+    PLAINTEXT VARCHAR(250);
 BEGIN
-    -- Chuyển Base64 sang RAW để giải mã
-    i_encrypted := UTL_ENCODE.BASE64_DECODE(UTL_RAW.cast_to_raw(p_encrypted));
-
-    i_decrypted := DBMS_CRYPTO.DECRYPT(
-        src => i_encrypted,
-        typ => DBMS_CRYPTO.DES_CBC_PKCS5,
-        key => i_key
-    );
-    -- Trả về dữ liệu giải mã dưới dạng VARCHAR2
-    RETURN UTL_RAW.cast_to_varchar2(i_decrypted);
+    PLAINTEXT := UPPER(STR);  -- Chuyển đổi toàn bộ chuỗi thành chữ hoa
+    LEN := LENGTH(STR);
+    FOR I IN 1..LEN LOOP
+        KQ := KQ || SHIFTCHAR(SUBSTR(PLAINTEXT, I, 1), K);  -- Dịch từng ký tự theo khóa K
+    END LOOP;
+    RETURN KQ;  -- Trả về kết quả mã hóa
 END;
 /
-
-
--- Test Mã hóa Des
+CREATE OR REPLACE FUNCTION DECRYPTCAESARCIPHER(STR VARCHAR, K NUMBER)
+RETURN VARCHAR
+AS
+BEGIN
+    -- Đảo ngược bằng cách sử dụng khóa K âm
+    RETURN ENCRYPTCAESARCIPHER(STR, -K);
+END;
+/
+-- Mã hóa
 DECLARE
-    cipher VARCHAR2(2000);
-    plain VARCHAR2(1000);
+    encrypted_text VARCHAR2(100);
 BEGIN
-    -- Mã hóa
-    cipher := MaHoaDES('Test');
-    -- Giải mã
-    plain := GiaiMaDES(cipher);
-
-    -- Hiển thị kết quả
-    DBMS_OUTPUT.PUT_LINE('Cipher (Base64): ' || cipher);
-    DBMS_OUTPUT.PUT_LINE('Plain: ' || plain);
+    encrypted_text := ENCRYPTCAESARCIPHER('Hello123', 5);  -- Mã hóa chuỗi 'Hello123' với khóa 5
+    DBMS_OUTPUT.PUT_LINE('Encrypted: ' || encrypted_text);
 END;
 /
+-- Giải mã
+DECLARE
+    decrypted_text VARCHAR2(100);
+BEGIN
+    decrypted_text := DECRYPTCAESARCIPHER('MJQQT678', 5);  -- Giải mã chuỗi 'MJQQT678' với khóa 5
+    DBMS_OUTPUT.PUT_LINE('Decrypted: ' || decrypted_text);
+END;
+
+
+--GRANT EXECUTE ON DBMS_CRYPTO TO DOANNHOM4;
+--GRANT CREATE procedure TO DOANNHOM4;
+--GRANT EXECUTE ON UTL_RAW TO DOANNHOM4;
+--GRANT EXECUTE ON UTL_ENCODE TO DOANNHOM4;
+
+
+----HAM MA HOA DES 
+--/
+--CREATE OR REPLACE FUNCTION MaHoaDES (
+--    p_plaintext VARCHAR2
+--) RETURN VARCHAR2 IS
+--    i_key RAW(8) := UTL_RAW.cast_to_raw('Th3Jung4'); 
+--    i_encrypted RAW(2000);
+--BEGIN
+--    i_encrypted := DBMS_CRYPTO.ENCRYPT(
+--        src => UTL_RAW.cast_to_raw(p_plaintext), 
+--        typ => DBMS_CRYPTO.DES_CBC_PKCS5,      
+--        key => i_key
+--    );
+--    RETURN UTL_RAW.cast_to_varchar2(UTL_ENCODE.BASE64_ENCODE(i_encrypted));
+--END;
+--/
+--
+----HAM GIAI MA DES
+--CREATE OR REPLACE FUNCTION GiaiMaDES (
+--    p_encrypted VARCHAR2
+--) RETURN VARCHAR2 IS
+--    i_key RAW(8) := UTL_RAW.cast_to_raw('Th3Jung4');
+--    i_encrypted RAW(2000);
+--    i_decrypted RAW(2000);
+--BEGIN
+--    i_encrypted := UTL_ENCODE.BASE64_DECODE(UTL_RAW.cast_to_raw(p_encrypted));
+--
+--    i_decrypted := DBMS_CRYPTO.DECRYPT(
+--        src => i_encrypted,
+--        typ => DBMS_CRYPTO.DES_CBC_PKCS5,
+--        key => i_key
+--    );
+--    RETURN UTL_RAW.cast_to_varchar2(i_decrypted);
+--END;
+--/
+--
+--
+---- Test Mã hóa Des
+--SET SERVEROUTPUT ON;
+--DECLARE
+--    cipher VARCHAR2(2000);
+--    plain VARCHAR2(1000);
+--BEGIN
+--    cipher := MaHoaDES('test');
+--    plain := GiaiMaDES(cipher);
+--
+--    DBMS_OUTPUT.PUT_LINE('Cipher (Base64): ' || cipher);
+--    DBMS_OUTPUT.PUT_LINE('Plain: ' || plain);
+--END;
+--/
 
 
 --------------------Asymmetric Encryption---------------------------
@@ -1059,4 +1129,114 @@ begin
     AND object_name = 'TAB'
     ORDER BY extended_timestamp DESC;
 end;
+
+-----------------------VPD---------------------------
+GRANT SELECT,INSERT,UPDATE,DELETE ON DOANNHOM4.USERS TO SELLERS_ROLE;
+GRANT SELECT,INSERT,UPDATE,DELETE ON DOANNHOM4.USERDETAILS TO SELLERS_ROLE;
+
+GRANT CREATE SESSION TO JOHN , JOE,AMY,BETH;
+--
+--Kiểm tra những user nào đã được gán vào role
+SELECT * 
+FROM DBA_ROLE_PRIVS
+WHERE GRANTED_ROLE = 'CUSTOMERS_ROLE';
+
+
+--==================
+
+--KIỂM TRA TẤT CẢ POLICY 
+SELECT *
+FROM DBA_POLICIES
+
+
+--VPD
+/*
+chính sách cho những user cửa CUSTOMERS_ROLE
+những user thuộc nhóm khách hàng thì 
+chỉ có quyền xem và sửa dữ liệu của chính mình
+
+*/
+CREATE OR REPLACE FUNCTION func_USERDETAILS_SU (
+    p_schema VARCHAR2,
+    p_object VARCHAR2
+)
+RETURN VARCHAR2
+IS
+BEGIN
+    IF USER ='JOHN' THEN
+        RETURN 'UserID = ''1''';
+    ELSIF USER ='JOE' THEN
+        RETURN 'UserID = ''2''';
+    ELSIF USER ='DOANNHOM4' THEN
+        RETURN '';
+        ELSIF USER ='SYS' THEN
+        RETURN '';
+    END IF;
+END;
 /
+
+BEGIN
+    DBMS_RLS.add_POLICY(
+        object_schema   => 'DOANNHOM4',
+        object_name     => 'USERDETAILS',
+        policy_name     => 'USERDETAILS_POLICY_CTRL01',
+        policy_function => 'func_USERDETAILS_SU',
+        statement_types => 'SELECT,UPDATE',
+        update_check=> TRUE
+    );
+END;
+/
+---=========================================================
+
+-- TEST CASE VPD
+
+--test lần lượt những usser được gán policy; 
+SELECT*FROM DOANNHOM4.USERDETAILS;
+-- sửa dữ liệu của bản thân từ user thuộc role customers;
+UPDATE DOANNHOM4.USERDETAILS
+SET ADDRESS='140 Le Trong Tan'
+WHERE USERID=1;
+COMMIT;
+---=========================================================
+
+CREATE OR REPLACE FUNCTION func_USERDETAILS_ID (
+    p_schema VARCHAR2,
+    p_object VARCHAR2
+)
+RETURN VARCHAR2
+IS
+BEGIN
+    IF USER ='DOANNHOM4' THEN
+        RETURN '';
+    END IF;
+END;
+/
+
+
+BEGIN
+    DBMS_RLS.add_POLICY(
+        object_schema   => 'DOANNHOM4',
+        object_name     => 'USERDETAILS',
+        policy_name     => 'USERDETAILS_POLICY_CTRL02',
+        policy_function => 'func_USERDETAILS_ID',
+        statement_types => 'INSERT,DELETE',
+        update_check=> TRUE
+    );
+END;
+/
+---=========================================================
+
+-- TEST CASE VPD
+SELECT * FROM USERS;
+SELECT * FROM USERDETAILS;
+
+INSERT INTO USERS VALUES(6,NULL,NULL,'(null)');
+INSERT INTO USERDETAILS VALUES(6,NULL,NULL,2);
+
+DELETE FROM USERDETAILS
+WHERE USERID=6;
+
+commit all
+---=========================================================
+
+--OLS

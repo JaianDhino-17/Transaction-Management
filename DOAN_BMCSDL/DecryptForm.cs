@@ -56,15 +56,15 @@ namespace DOAN_BMCSDL
                          }
                         else if(reader.GetString(2) == "Rút tiền")
                         {
-                            if (((int)AsymmestricEncryption.publicKey == 0 && (int)AsymmestricEncryption.privateKey == 0) || (p != "" && q != ""))
-                                AsymmestricEncryption.pub_k_And_pri_k(int.Parse(p), int.Parse(q));
+                            //if (((int)AsymmestricEncryption.publicKey == 0 && (int)AsymmestricEncryption.privateKey == 0) || (p != "" && q != ""))
+                            //    AsymmestricEncryption.pub_k_And_pri_k(int.Parse(p), int.Parse(q));
                             DecryptAmount = AsymmestricEncryption.Decrypt_RSA(reader.GetString(3));
                             DecryptContext = AsymmestricEncryption.Decrypt_RSA(reader.GetString(5));
                         }    
                         else
                         {
-                            DecryptAmount = SymmetricEncryption.DecryptAddition(reader.GetString(3), int.Parse(textBox2.Text));
-                            DecryptContext = SymmetricEncryption.DecryptAddition(reader.GetString(5), int.Parse(textBox2.Text));
+                            DecryptAmount = SymmetricEncryption.DecryptCaesar_Func(reader.GetString(3));
+                            DecryptContext = SymmetricEncryption.DecryptCaesar_Func(reader.GetString(5));
                         }
                         label9.Text = DecryptContext;
                         label10.Text = reader.GetString(4);
