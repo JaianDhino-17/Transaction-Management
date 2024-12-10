@@ -165,12 +165,6 @@ BEGIN
 END;
 /
 
--- Mã hóa dữ liệu trong bảng Accounts
-UPDATE Accounts
-SET EncryptedDetails = MaHoaDES(AccountNumber);
-
-SELECT * FROM ACCOUNTS
-
 
 --HAM GIAI MA DES
 /
@@ -189,97 +183,158 @@ BEGIN
 END;
 /
 
-SELECT GiaiMaDes(EncryptedDetails) FROM Accounts;
+-- Test Mã hóa Des
+declare
+    cipher Raw(2000);
+    plain nvarchar2(1000);
+begin
+    cipher := MaHoaDES('Hello world');
+    plain := GiaiMaDes(cipher);
+    -- Hiển thị kết quả mã hóa và giải mã 
+    dbms_output.put_line('Cipher: ' || cipher); 
+    dbms_output.put_line('Plain: ' || plain);
+end;
 
 --------------------Asymmetric Encryption---------------------------
--- HAM MA HOA RSA
-CREATE OR REPLACE FUNCTION MaHoaRSA (
-    plain_text IN VARCHAR2,
-    public_key IN NUMBER,
-    p_n IN NUMBER
-) RETURN VARCHAR2 IS
-    l_encrypted_text VARCHAR2(4000) := '';
-    l_char_array VARCHAR2(256) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.!@#$%^&*()-_+=/';
-    l_index NUMBER;
-    l_number NUMBER;
-BEGIN
-    FOR i IN 1..LENGTH(plain_text) LOOP
-        -- Lấy ký tự hiện tại
-        l_index := INSTR(l_char_array, SUBSTR(plain_text, i, 1)) - 1;
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--START : PLEASE DO NOT MAKE ANY CHANGES TO THIS SECTION.
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+SET define on
+SET echo on
+SET linesize 2048
+SET escape off
+SET timing on
+SET trimspool on
+SET serveroutput on
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--END : PLEASE DO NOT MAKE ANY CHANGES TO THIS SECTION.							 
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        IF l_index >= 0 AND l_index < LENGTH(l_char_array) THEN
-            l_number := MOD(POWER(l_index, public_key), p_n); -- Mã hóa
-            
-            -- Sử dụng phép MOD để đảm bảo l_number không vượt quá chiều dài của l_char_array
-            l_number := MOD(l_number, LENGTH(l_char_array));
+CREATE OR REPLACE PACKAGE CRYPTO AS 
+FUNCTION RSA_ENCRYPT(PLAIN_TEXT VARCHAR2,PRIVATE_KEY VARCHAR2) RETURN VARCHAR2
+AS
+LANGUAGE JAVA NAME 'com/dishtavar/crypto4ora/RSAUtil.encrypt (java.lang.String,java.lang.String) return java.lang.String';
 
-            l_encrypted_text := l_encrypted_text || SUBSTR(l_char_array, l_number + 1, 1); -- Thêm ký tự đã mã hóa
-        END IF;
-    END LOOP;
 
-    RETURN l_encrypted_text;
-END;
-/
- 
-UPDATE USERS
-SET FULLNAME = MaHoaRSA (FULLNAME,5,35)
+FUNCTION RSA_DECRYPT(ENCRYPTED_TEXT VARCHAR2,PUBLIC_KEY VARCHAR2) RETURN VARCHAR2
+AS
+LANGUAGE JAVA NAME 'com/dishtavar/crypto4ora/RSAUtil.decrypt (java.lang.String,java.lang.String) return java.lang.String';
 
-SELECT * FROM USERS
- 
---GiaiMa RSA
 
-CREATE OR REPLACE FUNCTION GiaiMaRSA (
-    encrypted_text IN VARCHAR2,
-    private_key IN NUMBER,
-    p_n IN NUMBER
-) RETURN VARCHAR2 IS
-    l_decrypted_text VARCHAR2(4000) := '';
-    l_char_array VARCHAR2(256) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.!@#$%^&*()-_+=/';
-    l_index NUMBER;
-    l_number NUMBER;
-BEGIN
-    FOR i IN 1..LENGTH(encrypted_text) LOOP
-        l_index := INSTR(l_char_array, SUBSTR(encrypted_text, i, 1)) - 1;
+FUNCTION RSA_SIGN(HASH_MESSAGE VARCHAR2,PUBLIC_KEY VARCHAR2) RETURN VARCHAR2
+AS
+LANGUAGE JAVA NAME 'com/dishtavar/crypto4ora/RSAUtil.sign (java.lang.String,java.lang.String) return java.lang.String';
 
-        IF l_index >= 0 AND l_index < LENGTH(l_char_array) THEN
-            
-            l_number := MOD(POWER(l_index, private_key), p_n);
-            
-           
-            l_number := MOD(l_number, LENGTH(l_char_array));
-            
-            l_decrypted_text := l_decrypted_text || SUBSTR(l_char_array, l_number + 1, 1);
-        ELSE
-            l_decrypted_text := l_decrypted_text || '?'; -- Ký tự không hợp lệ
-        END IF;
-    END LOOP;
 
-    RETURN l_decrypted_text;
-END;
+FUNCTION RSA_VERIFY(PLAIN_HASH VARCHAR2,SIGNNED_HASH VARCHAR2,PRIVATE_KEY VARCHAR2) RETURN BOOLEAN
+AS
+LANGUAGE JAVA NAME 'com/dishtavar/crypto4ora/RSAUtil.verify (java.lang.String,java.lang.String,java.lang.String) return java.lang.Boolean';
+
+FUNCTION RSA_GENERATE_KEYS(KEY_SIZE NUMBER) RETURN VARCHAR2
+AS
+LANGUAGE JAVA NAME 'com/dishtavar/crypto4ora/GenerateKey.generateRSAKeys (java.lang.Integer) return java.lang.String';
+
+END CRYPTO;
 /
 
+--Test Mã hóa RSA
+SELECT CRYPTO.RSA_GENERATE_KEYS(KEY_SIZE => 1024) FROM DUAL;
 
+SELECT CRYPTO.RSA_ENCRYPT('Eiko Araki is an expert of the Sanuki Kagari Temari, a Japanese traditional craft. The', 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfg6cMhju14dlXe9FXdX+qWL4wWWBP+t7djskM3B1ys7iHBTdmyztFTlaxXcGAJwU2AmeI5p3YmsbAIlusvLEWZVIwzp4k/CoWd4DX8rPPrUKTx6vnVo/sz9qq8F5fOLCFOfVLfyEUCwlrhWprEZyMBKgIuhXxwBvrS4Enyp6zvwIDAQAB')
+FROM DUAL;
 
--- Giải mã dữ liệu trong bảng Transactions
-SELECT USERID, GiaiMaRSA(FULLNAME,5 , 35) AS DecryptedEMAIL FROM USERS;
+SELECT CRYPTO.RSA_DECRYPT('XV9bbDGx9JWZXVnnWcTIekHAuT6U5aitsOLfWS9tHYaa1GqUJF0vZGO6zCrLzOOrJe0ZhUl4aKxF4uDfevU4UqhQGyMFn+src21IgCUtd4LWbq4YDO2mM4oKWKIClU+OD7da3bdU1XQRsHwu5C6omW4/d4dDt9TkMyMZEje8vac=',
+                          'MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAN+DpwyGO7Xh2Vd70Vd1f6pYvjBZYE/63t2OyQzcHXKzuIcFN2bLO0VOVrFdwYAnBTYCZ4jmndiaxsAiW6y8sRZlUjDOniT8KhZ3gNfys8+tQpPHq+dWj+zP2qrwXl84sIU59Ut/IRQLCWuFamsRnIwEqAi6FfHAG+tLgSfKnrO/AgMBAAECgYEAmFcm+EZVVDZG6HWfzThsdzJdDp8cIecfF2tGZNlxyMftsTlA9XL3RtmKBQGd7TarOpCQ+KIWW5fCdxnz2dwR5ae5l1JZgkjIWJUmdFwSZjUIel9J3ADNCyl0GdEzAQfWfUS3eSelEW2LE6iTE4D8pub7UOClpsb2rpirGO8LcQECQQDxnCm54F/2pUAcKpBJmnSqn/G6LHtTmeRVsa0HM8LDL6CZVXE6Bw4A1M9zHX0eJKDu3KEh3hM2yuQVcTQEKXffAkEA7NOVQqG6pX7HAvfGlH8yZBh+BDZAGHVbZ4bNyNCkVCx6YEVENcCWloZObXTRaNGrSa7u2bj2JTIvfltpQIHAIQJASs0wVe3TiAcNXCsJVOBO8mxmaF9RJ0bj3GwPx8UMrWVXcWF0lqSMf1FjkJ42mFh6wrjn4hZhGHukNcdAdXFpPQJBAI9BUYlzwS54qLNf5AxRgM7RjfDITC8/ViIihfpSUwTjvsbbP25wZ+b3qRtGzaFlKwKwQaUL4EERwW7ipqExm2ECQGZGqBocODdzTGYHXZybLG5fSZ3DdTZUNdpF9bjBSiabWXQkbwO6csNtQqO1h1W3J3VaTnaa1y7eQuTgvaqJlBc=')
+FROM DUAL;
 
-
------- Test Case
-SET SERVEROUTPUT ON;
-
-DECLARE
-    encrypted_value VARCHAR2(4000);
-    decrypted_value VARCHAR2(4000);
-BEGIN
-    -- Ví dụ mã hóa
-    encrypted_value := MaHoaRSA('THEANH12345', 5, 35);
-    DBMS_OUTPUT.PUT_LINE('Encrypted Value: ' || encrypted_value);
-    
-    -- Giải mã
-    decrypted_value := GiaiMaRSA(encrypted_value, 5, 35);
-    DBMS_OUTPUT.PUT_LINE('Decrypted Value: ' || decrypted_value);
-END;
-/
+---- HAM MA HOA RSA
+--CREATE OR REPLACE FUNCTION MaHoaRSA (
+--    plain_text IN VARCHAR2,
+--    public_key IN NUMBER,
+--    p_n IN NUMBER
+--) RETURN VARCHAR2 IS
+--    l_encrypted_text VARCHAR2(4000) := '';
+--    l_char_array VARCHAR2(256) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.!@#$%^&*()-_+=/';
+--    l_index NUMBER;
+--    l_number NUMBER;
+--BEGIN
+--    FOR i IN 1..LENGTH(plain_text) LOOP
+--        -- Lấy ký tự hiện tại
+--        l_index := INSTR(l_char_array, SUBSTR(plain_text, i, 1)) - 1;
+--
+--        IF l_index >= 0 AND l_index < LENGTH(l_char_array) THEN
+--            l_number := MOD(POWER(l_index, public_key), p_n); -- Mã hóa
+--            
+--            -- Sử dụng phép MOD để đảm bảo l_number không vượt quá chiều dài của l_char_array
+--            l_number := MOD(l_number, LENGTH(l_char_array));
+--
+--            l_encrypted_text := l_encrypted_text || SUBSTR(l_char_array, l_number + 1, 1); -- Thêm ký tự đã mã hóa
+--        END IF;
+--    END LOOP;
+--
+--    RETURN l_encrypted_text;
+--END;
+--/
+-- 
+--UPDATE USERS
+--SET FULLNAME = MaHoaRSA (FULLNAME,5,35)
+--
+--SELECT * FROM USERS
+-- 
+----GiaiMa RSA
+--
+--CREATE OR REPLACE FUNCTION GiaiMaRSA (
+--    encrypted_text IN VARCHAR2,
+--    private_key IN NUMBER,
+--    p_n IN NUMBER
+--) RETURN VARCHAR2 IS
+--    l_decrypted_text VARCHAR2(4000) := '';
+--    l_char_array VARCHAR2(256) := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.!@#$%^&*()-_+=/';
+--    l_index NUMBER;
+--    l_number NUMBER;
+--BEGIN
+--    FOR i IN 1..LENGTH(encrypted_text) LOOP
+--        l_index := INSTR(l_char_array, SUBSTR(encrypted_text, i, 1)) - 1;
+--
+--        IF l_index >= 0 AND l_index < LENGTH(l_char_array) THEN
+--            
+--            l_number := MOD(POWER(l_index, private_key), p_n);
+--            
+--           
+--            l_number := MOD(l_number, LENGTH(l_char_array));
+--            
+--            l_decrypted_text := l_decrypted_text || SUBSTR(l_char_array, l_number + 1, 1);
+--        ELSE
+--            l_decrypted_text := l_decrypted_text || '?'; -- Ký tự không hợp lệ
+--        END IF;
+--    END LOOP;
+--
+--    RETURN l_decrypted_text;
+--END;
+--/
+--
+--
+--
+---- Giải mã dữ liệu trong bảng Transactions
+--SELECT USERID, GiaiMaRSA(FULLNAME,5 , 35) AS DecryptedEMAIL FROM USERS;
+--
+--
+-------- Test Case
+--SET SERVEROUTPUT ON;
+--
+--DECLARE
+--    encrypted_value VARCHAR2(4000);
+--    decrypted_value VARCHAR2(4000);
+--BEGIN
+--    -- Ví dụ mã hóa
+--    encrypted_value := MaHoaRSA('THEANH12345', 5, 35);
+--    DBMS_OUTPUT.PUT_LINE('Encrypted Value: ' || encrypted_value);
+--    
+--    -- Giải mã
+--    decrypted_value := GiaiMaRSA(encrypted_value, 5, 35);
+--    DBMS_OUTPUT.PUT_LINE('Decrypted Value: ' || decrypted_value);
+--END;
+--/
 
 ----------------------------- Session ---------------------------------------
 
