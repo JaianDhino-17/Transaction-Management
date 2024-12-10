@@ -119,6 +119,7 @@
     <Compile Include="AsymmestricEncryption.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="cac.cs" />
     <Compile Include="Challenge_ResponeAuthentication.cs">
       <SubType>Form</SubType>
     </Compile>
