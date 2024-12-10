@@ -150,6 +150,12 @@
     <Compile Include="HybridEcryption.Designer.cs">
       <DependentUpon>HybridEcryption.cs</DependentUpon>
     </Compile>
+    <Compile Include="jungngu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="jungngu.Designer.cs">
+      <DependentUpon>jungngu.cs</DependentUpon>
+    </Compile>
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
