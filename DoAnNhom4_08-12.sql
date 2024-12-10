@@ -145,55 +145,70 @@ BEGIN
 END;
 
 ------------------Symmetric Encryption---------------------------------------
-GRANT EXECUTE ON DBMS_CRYPTO TO DoAnNhom4;
-GRANT CREATE PROCEDURE TO DoAnNhom4;
+GRANT EXECUTE ON DBMS_CRYPTO TO DOANNHOM4;
+GRANT CREATE PROCEDURE TO DOANNHOM4;
+SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE = 'DOANNHOM4';
+SELECT * FROM DBA_SYS_PRIVS WHERE GRANTEE = 'DOANNHOM4';
+SELECT * FROM DBA_ROLE_PRIVS WHERE GRANTEE = 'DOANNHOM4';
+SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE = 'DOANNHOM4';
 
 --HAM MA HOA DES 
 /
 CREATE OR REPLACE FUNCTION MaHoaDES (
     p_plaintext CHAR
-) RETURN RAW IS
+) RETURN VARCHAR2 IS
     i_key RAW(8) := UTL_RAW.cast_to_raw('Th3Jung4'); 
-    i_encrypted RAW(2000);
+    i_encrypted RAW(100);
 BEGIN
     i_encrypted := DBMS_CRYPTO.ENCRYPT(
         src => UTL_RAW.cast_to_raw(p_plaintext), 
         typ => DBMS_CRYPTO.DES_CBC_PKCS5,      
         key => i_key
     );
-    RETURN i_encrypted;
+    -- Chuyển đổi RAW sang Base64 để trả về kiểu VARCHAR2
+    RETURN TO_CHAR(UTL_ENCODE.BASE64_ENCODE(i_encrypted));
 END;
 /
 
-
 --HAM GIAI MA DES
 /
-CREATE OR REPLACE FUNCTION GiaiMaDes (
-    p_encrypted RAW
+CREATE OR REPLACE FUNCTION GiaiMaDES (
+    p_encrypted VARCHAR2
 ) RETURN VARCHAR2 IS
     i_key RAW(8) := UTL_RAW.cast_to_raw('Th3Jung4');
-    i_decrypted RAW(2000);
+    i_encrypted RAW(100);
+    i_decrypted RAW(100);
 BEGIN
+    -- Chuyển Base64 sang RAW để giải mã
+    i_encrypted := UTL_ENCODE.BASE64_DECODE(UTL_RAW.cast_to_raw(p_encrypted));
+
     i_decrypted := DBMS_CRYPTO.DECRYPT(
-        src => p_encrypted,
+        src => i_encrypted,
         typ => DBMS_CRYPTO.DES_CBC_PKCS5,
         key => i_key
     );
+    -- Trả về dữ liệu giải mã dưới dạng VARCHAR2
     RETURN UTL_RAW.cast_to_varchar2(i_decrypted);
 END;
 /
 
+
 -- Test Mã hóa Des
-declare
-    cipher Raw(2000);
-    plain nvarchar2(1000);
-begin
-    cipher := MaHoaDES('Hello world');
-    plain := GiaiMaDes(cipher);
-    -- Hiển thị kết quả mã hóa và giải mã 
-    dbms_output.put_line('Cipher: ' || cipher); 
-    dbms_output.put_line('Plain: ' || plain);
-end;
+DECLARE
+    cipher VARCHAR2(2000);
+    plain VARCHAR2(1000);
+BEGIN
+    -- Mã hóa
+    cipher := MaHoaDES('Test');
+    -- Giải mã
+    plain := GiaiMaDES(cipher);
+
+    -- Hiển thị kết quả
+    DBMS_OUTPUT.PUT_LINE('Cipher (Base64): ' || cipher);
+    DBMS_OUTPUT.PUT_LINE('Plain: ' || plain);
+END;
+/
+
 
 --------------------Asymmetric Encryption---------------------------
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -240,7 +255,7 @@ END CRYPTO;
 --Test Mã hóa RSA
 SELECT CRYPTO.RSA_GENERATE_KEYS(KEY_SIZE => 1024) FROM DUAL;
 
-SELECT CRYPTO.RSA_ENCRYPT('Eiko Araki is an expert of the Sanuki Kagari Temari, a Japanese traditional craft. The', 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfg6cMhju14dlXe9FXdX+qWL4wWWBP+t7djskM3B1ys7iHBTdmyztFTlaxXcGAJwU2AmeI5p3YmsbAIlusvLEWZVIwzp4k/CoWd4DX8rPPrUKTx6vnVo/sz9qq8F5fOLCFOfVLfyEUCwlrhWprEZyMBKgIuhXxwBvrS4Enyp6zvwIDAQAB')
+SELECT CRYPTO.RSA_ENCRYPT('test', 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfg6cMhju14dlXe9FXdX+qWL4wWWBP+t7djskM3B1ys7iHBTdmyztFTlaxXcGAJwU2AmeI5p3YmsbAIlusvLEWZVIwzp4k/CoWd4DX8rPPrUKTx6vnVo/sz9qq8F5fOLCFOfVLfyEUCwlrhWprEZyMBKgIuhXxwBvrS4Enyp6zvwIDAQAB')
 FROM DUAL;
 
 SELECT CRYPTO.RSA_DECRYPT('XV9bbDGx9JWZXVnnWcTIekHAuT6U5aitsOLfWS9tHYaa1GqUJF0vZGO6zCrLzOOrJe0ZhUl4aKxF4uDfevU4UqhQGyMFn+src21IgCUtd4LWbq4YDO2mM4oKWKIClU+OD7da3bdU1XQRsHwu5C6omW4/d4dDt9TkMyMZEje8vac=',
@@ -276,11 +291,6 @@ FROM DUAL;
 --END;
 --/
 -- 
---UPDATE USERS
---SET FULLNAME = MaHoaRSA (FULLNAME,5,35)
---
---SELECT * FROM USERS
--- 
 ----GiaiMa RSA
 --
 --CREATE OR REPLACE FUNCTION GiaiMaRSA (
@@ -312,12 +322,6 @@ FROM DUAL;
 --    RETURN l_decrypted_text;
 --END;
 --/
---
---
---
----- Giải mã dữ liệu trong bảng Transactions
---SELECT USERID, GiaiMaRSA(FULLNAME,5 , 35) AS DecryptedEMAIL FROM USERS;
---
 --
 -------- Test Case
 --SET SERVEROUTPUT ON;
@@ -939,3 +943,120 @@ CREATE USER BETH IDENTIFIED BY BETH QUOTA 10M ON USERS PROFILE CHECK_LOGIN_USERS
 GRANT DATAENTRY TO JOHN,JOE;
 GRANT SUPERVISOR TO FRED;
 GRANT MANAGEMENT TO AMY,BETH;
+
+----------------------------Standard Auditing--------------------------------
+-- Tạo user audit_test
+CREATE USER audit_test IDENTIFIED BY 123
+DEFAULT TABLESPACE users
+TEMPORARY TABLESPACE temp
+QUOTA UNLIMITED ON users;
+
+-- gán quyền
+GRANT CONNECT TO audit_test;
+GRANT CREATE SESSION TO audit_test;
+GRANT CREATE TABLE TO audit_test;
+GRANT SELECT ANY TABLE TO audit_test;
+GRANT UPDATE ANY TABLE TO audit_test;
+GRANT DELETE ANY TABLE TO audit_test;
+GRANT INSERT ANY TABLE TO audit_test;
+GRANT CREATE PROCEDURE TO audit_test;
+
+-- Thực hiện giám sát user audit_test 
+AUDIT Select TABLE BY audit_test BY ACCESS; 
+AUDIT Insert TABLE BY audit_test BY ACCESS; 
+AUDIT update TABLE BY audit_test BY ACCESS; 
+AUDIT Delete TABLE BY audit_test BY ACCESS;
+
+-- Thủ tục SELECT để kiểm tra
+CREATE OR REPLACE PROCEDURE PRO_SYS_SELECT_USER_DML(CUR OUT SYS_REFCURSOR)
+IS
+BEGIN
+    OPEN CUR FOR
+        SELECT USERNAME FROM DBA_USERS ORDER BY USERNAME ASC;
+END;
+/
+--USER SYS : Thủ tục tạo giám sát
+CREATE OR REPLACE PROCEDURE PRO_CREATE_AUDIT(
+    P_STATEMENT IN VARCHAR2, P_USERNAME IN VARCHAR2)
+AS
+    V_AUDIT_COMMAND VARCHAR2(400);
+BEGIN
+    -- TAO CAU LENH AUDIT
+    V_AUDIT_COMMAND := 'AUDIT ' || P_STATEMENT || ' BY ' || P_USERNAME;
+    -- THUC THI CAU LENH AUDIT
+    EXECUTE IMMEDIATE V_AUDIT_COMMAND;
+    -- IN THONG BAO THANH CONG
+    DBMS_OUTPUT.PUT_LINE('AUDIT COMMAND EXECUTED SUCCESSFULLY.');
+EXCEPTION
+    WHEN OTHERS THEN
+        -- XU LY LOI
+        DBMS_OUTPUT.PUT_LINE('ERROR EXECUTING AUDIT COMMAND: ' || SQLERRM);
+        -- NEM LAI LOI DE C# CO THE BAT DUOC
+        RAISE;
+END;
+/
+
+--USER SYS : Thủ tục xóa giám xát
+CREATE OR REPLACE PROCEDURE PRO_DROP_AUDIT(
+    P_STATEMENT IN VARCHAR2, P_USERNAME IN VARCHAR2)
+AS
+    V_AUDIT_COMMAND VARCHAR2(400);
+BEGIN
+    -- TAO CAU LENH AUDIT
+    V_AUDIT_COMMAND := 'NOAUDIT ' || P_STATEMENT || ' BY ' || P_USERNAME;
+    -- THUC THI CAU LENH AUDIT
+    EXECUTE IMMEDIATE V_AUDIT_COMMAND;
+    -- IN THONG BAO THANH CONG
+    DBMS_OUTPUT.PUT_LINE('AUDIT COMMAND EXECUTED SUCCESSFULLY.');
+EXCEPTION
+    WHEN OTHERS THEN
+        -- XU LY LOI
+        DBMS_OUTPUT.PUT_LINE('ERROR EXECUTING AUDIT COMMAND: ' || SQLERRM);
+        -- NEM LAI LOI DE C# CO THE BAT DUOC
+        RAISE;
+END;
+/
+
+--USER SYS: Thủ tục kiểm tra USER bị giám sát hoạt động nào
+CREATE OR REPLACE PROCEDURE PRO_SELECT_STMT_AUDIT_OPTS
+(USERNAME IN VARCHAR2, CUR OUT SYS_REFCURSOR)
+IS
+BEGIN
+    OPEN CUR FOR
+        SELECT * FROM DBA_STMT_AUDIT_OPTS
+        WHERE USER_NAME = USERNAME;
+END;
+/
+
+CREATE TABLE TAB(
+    ID VARCHAR(10)
+);
+
+INSERT INTO TAB
+VALUES ('ID01');
+INSERT INTO TAB
+VALUES ('ID02');
+
+UPDATE AUDIT_TEST.TAB SET ID='ID1'
+WHERE ID='ID01';
+
+SELECT * FROM TAB;
+
+DELETE TAB;
+
+DROP TABLE TAB;
+-- Thủ tục xem, Kiểm tra giám sát hoạt động của user
+create or replace procedure pro_select_audit_trail_user
+(username in VARCHAR2, cur out sys_refcursor)
+is
+begin
+    open cur for
+    SELECT Session_ID, Extended_timestamp, DB_User, UserHost,
+    Object_schema, Object_name, Statement_Type, SQL_Bind, SQL_Text
+    FROM dba_common_audit_trail
+    WHERE AUDIT_TYPE = 'Standard Audit'
+    AND DB_USER = username
+    AND object_name = 'TAB'
+    ORDER BY extended_timestamp DESC;
+end;
+/

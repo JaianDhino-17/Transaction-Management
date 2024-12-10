@@ -42,8 +42,8 @@ namespace DOAN_BMCSDL
             Database.Set_Database(host, port, sid, user, password);
             if (Database.Connect())
             {
-                SimpleAuthentication simpleAuthentication = new SimpleAuthentication(password);
-                simpleAuthentication.ShowDialog();
+                //SimpleAuthentication simpleAuthentication = new SimpleAuthentication(password);
+                //simpleAuthentication.ShowDialog();
                 OracleConnection conn = Database.Get_connect();
                 MessageBox.Show("Đăng nhập thành công!");
                 AccountInforForm accountInforForm = new AccountInforForm();

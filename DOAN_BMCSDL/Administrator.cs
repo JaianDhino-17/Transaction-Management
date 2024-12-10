@@ -44,5 +44,27 @@ namespace DOAN_BMCSDL
             else
                 MessageBox.Show("Đăng nhập không thành công!\nVui lòng kiểm tra lại tài khoản");
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string host = textBox1.Text;
+            string port = textBox2.Text;
+            string sid = textBox3.Text;
+            string user = txtUsername.Text;
+            string password = txtPassword.Text;
+            username = user;
+            Database.Set_Database(host, port, sid, user, password);
+            if (Database.Connect())
+            {
+
+                OracleConnection conn = Database.Get_connect();
+                MessageBox.Show("Đăng nhập thành công!");
+                Auditing admin_Privilege = new Auditing();
+                admin_Privilege.ShowDialog();
+                this.Hide();
+            }
+            else
+                MessageBox.Show("Đăng nhập không thành công!\nVui lòng kiểm tra lại tài khoản");
+        }
     }
 }
