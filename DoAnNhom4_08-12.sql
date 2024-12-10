@@ -281,7 +281,51 @@ BEGIN
 END;
 /
 
+----------------------------- Session ---------------------------------------
 
+-- Cấp quyền KILL SESSION
+CREATE USER KillSession IDENTIFIED BY 123; 
+
+GRANT CREATE SESSION TO KillSession; 
+GRANT CREATE PROCEDURE TO KillSession;
+GRANT SELECT ON v_$session TO KillSession;
+GRANT ALTER SESSION TO KillSession;
+GRANT ALTER SYSTEM TO KillSession;
+
+GRANT EXECUTE ON kill_all_sessions_other TO KillSession;
+
+-- Thủ tục Kill Session
+
+CREATE OR REPLACE PROCEDURE kill_all_sessions_other(p_username IN VARCHAR2) AS
+BEGIN
+    FOR rec IN (SELECT SID, SERIAL#
+                FROM v$session
+                WHERE USERNAME = UPPER(p_username) 
+                  AND SID != SYS_CONTEXT('USERENV', 'SESSIONID')) LOOP
+        BEGIN
+            -- Sử dụng IMMEDIATE để đảm bảo session bị ngắt ngay lập tức
+            EXECUTE IMMEDIATE 'ALTER SYSTEM KILL SESSION ''' || rec.SID || ',' || rec.SERIAL# || ''' IMMEDIATE';
+            DBMS_OUTPUT.PUT_LINE('Ngắt kết nối phiên: ' || rec.SID || ', ' || rec.SERIAL#);
+
+            -- Giải phóng các tài nguyên liên quan (nếu cần thiết)
+            EXECUTE IMMEDIATE 'ALTER SYSTEM DISCONNECT SESSION ''' || rec.SID || ',' || rec.SERIAL# || ''' POST_TRANSACTION';
+        EXCEPTION
+            WHEN OTHERS THEN
+                -- Ghi log lỗi nếu không thể ngắt session
+                DBMS_OUTPUT.PUT_LINE('Không thể ngắt phiên: ' || rec.SID || ', ' || rec.SERIAL# || '. Lỗi: ' || SQLERRM);
+        END;
+    END LOOP;
+
+    -- Kiểm tra nếu không có phiên nào để ngắt
+    IF SQL%ROWCOUNT = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('Không có phiên nào để ngắt cho người dùng: ' || p_username);
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Bắt và xử lý bất kỳ lỗi nào xảy ra trong quá trình ngắt session
+        RAISE_APPLICATION_ERROR(-20001, 'Lỗi khi ngắt session: ' || SQLERRM);
+END;
 -- Session
 Select * from users
 SELECT SID, SERIAL#, USERNAME, STATUS
